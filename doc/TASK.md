@@ -13,3 +13,14 @@ reactive.
 - reactivity_2A3_MaP:
 A float value from 0-1 measuring reactivity to the 2A3 chemical, with 1 being the most reactive and 0 being the least 
 reactive.
+
+# Data #
+- sequence_id,
+- sequence, 
+- experiment_type,
+- dataset_name,
+- reads,
+- signal_to_noise,
+- SN_filter,
+- reactivity,
+- reactivity_error,
