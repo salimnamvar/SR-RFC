@@ -3,13 +3,13 @@
 """
 
 
-# region IMPORT
+# region Imported Dependencies
 import argparse
 from typing import NoReturn
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
-# endregion IMPORT
+# endregion Imported Dependencies
 
 
 def csv2parquet(a_csv_path: str, a_parquet_path: str, a_compression: str = 'snappy') -> NoReturn:

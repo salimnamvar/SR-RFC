@@ -4,7 +4,7 @@
 """
 
 
-# region Imported Dependencies------------------------------------------------------------------------------------------
+# region Imported Dependencies
 import os
 from pathlib import Path
 import argparse
