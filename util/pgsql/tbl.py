@@ -24,9 +24,11 @@ def drop_tbl(a_conn: psycopg2.connect, a_tbl_name: str):
         # Drop the table
         with a_conn.cursor() as cursor:
             cursor.execute(f"DROP TABLE IF EXISTS {a_tbl_name};")
+            a_conn.commit()
 
 
 def create_tbl(a_conn: psycopg2.connect, a_tbl_name: str, a_columns: str):
     with a_conn.cursor() as cursor:
         create_table_query = f'CREATE TABLE {a_tbl_name} ({a_columns});'
         cursor.execute(create_table_query)
+        a_conn.commit()

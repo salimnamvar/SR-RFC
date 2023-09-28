@@ -46,9 +46,8 @@ def main():
     parser = argparse.ArgumentParser(description="Convert a CSV file into a PostgreSQL table.")
 
     # Define command-line arguments
-    parser.add_argument("--csv_file", default="G:/Challenges/RNA/data/train_data.csv",
-                        help="Path to the CSV file to import.")
-    parser.add_argument("--tbl_name", default='train', help="Name of the PostgreSQL table to create.")
+    parser.add_argument("csv_file", help="Path to the CSV file to import.")
+    parser.add_argument("tbl_name", help="Name of the PostgreSQL table to create.")
     parser.add_argument("--host", default="localhost", help="Database host (default: localhost).")
     parser.add_argument("--port", default="5432", help="Database port (default: 5432).")
     parser.add_argument("--database", default="rfc", help="Database name.")

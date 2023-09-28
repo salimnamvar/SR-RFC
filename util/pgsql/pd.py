@@ -15,3 +15,4 @@ def insert_rows(a_conn: psycopg2.connect, a_tbl_name: str, a_df: pd.DataFrame):
         for _, row in tqdm(a_df.iterrows(), desc='Inserting rows'):
             insert_query = f'INSERT INTO {a_tbl_name} VALUES ({", ".join(["%s"] * len(row))});'
             cursor.execute(insert_query, tuple(row))
+            a_conn.commit()
