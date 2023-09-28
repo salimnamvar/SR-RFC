@@ -4,8 +4,9 @@
 
 
 # region Imported Dependencies
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 import pandas as pd
+from torchvision import transforms
 # endregion Imported Dependencies
 
 
@@ -18,6 +19,7 @@ class SRRFCDataset(Dataset):
         self.csv_filename: str = a_csv_filename
         self.batch_size: int = a_batch_size
         self.reader = pd.read_csv(a_csv_filename, chunksize=a_batch_size)
+        self.transform = transforms.Compose([transforms.ToTensor()])
 
     def __len__(self):
         # Get number of samples
@@ -27,4 +29,14 @@ class SRRFCDataset(Dataset):
         return num_samples
 
     def __getitem__(self, item):
-        NotImplementedError
+        # Read the next batch
+        batch = next(self.reader)
+        return batch
+
+
+if __name__ == '__main__':
+    dataset = SRRFCDataset(a_csv_filename='G:/Challenges/RNA/data/train_data.csv',
+                           a_batch_size=10)
+    dataloader = DataLoader(dataset=dataset, batch_size=1)
+    for data in dataloader:
+        x = data

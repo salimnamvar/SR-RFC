@@ -12,12 +12,15 @@ import pyarrow.parquet as pq
 # endregion Imported Dependencies
 
 
+# region Sub-Functions
 def csv2parquet(a_csv_path: str, a_parquet_path: str, a_compression: str = 'snappy') -> NoReturn:
     df = pd.read_csv(a_csv_path)
     table = pa.Table.from_pandas(df)
     pq.write_table(table, a_parquet_path, compression=a_compression)
+# endregion Sub-Functions
 
 
+# region Tool
 def main():
     parser = argparse.ArgumentParser(description='Convert CSV to Parquet')
     parser.add_argument('a_csv_path', type=str, help='Input CSV file path')
@@ -31,3 +34,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+# endregion Tool
