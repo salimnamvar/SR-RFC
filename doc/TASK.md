@@ -22,7 +22,9 @@ Regressor of two values:
 - sequence_id: An arbitrary identifier for each RNA sequence.
 - **sequence**: Describes the RNA sequence as a string of `A`, `C`, `G`, and `U`.
 - **experiment_type**: Specifies whether the experiment used `DMS_MaP` or `2A3_MaP` for chemical mapping.
-- dataset_name: The name of the high throughput sequencing dataset from which the reactivity profile was extracted.
+- dataset_name: The name of the high throughput
+  sequencing [test_sequences.csv](..%2F..%2F..%2Fdata%2Ftest_sequences.csv)dataset from which the reactivity profile was
+  extracted.
 - reads: Number of reads in the high throughput sequencing experiment assigned to the RNA sequence.
     - The number of reads is important because it can provide information about the abundance of the RNA sequence in the
       sample. Generally, a higher number of reads for an RNA sequence suggests that it is more abundant in the sample.
@@ -42,3 +44,4 @@ Regressor of two values:
 |           Unique Sequence IDs            |                   806,573                   |                                                           `SELECT COUNT(*) FROM (SELECT sequence_id FROM train GROUP BY sequence_id);`                                                            |
 | Samples With More Than Twice Occurrences |                   40,348                    |   `SELECT SUM(occurance_count) AS total_occurances FROM (SELECT sequence_id, COUNT(sequence_id) AS occurance_count FROM train GROUP BY sequence_id HAVING COUNT(sequence_id) > 2) AS subquery;`   |
 |   Samples With Additional Occurrences    |                   30,534                    | `SELECT SUM(occurance_count - 2) AS total_occurances FROM (SELECT sequence_id, COUNT(sequence_id) AS occurance_count FROM train GROUP BY sequence_id HAVING COUNT(sequence_id) > 2) AS subquery;` |
+|              Sequence Size?              |                      ?                      |                                                                                                 ?                                                                                                 |
