@@ -1,8 +1,11 @@
 """ Dataset
 
 """
-import numpy as np
+
+
 # region Imported Dependencies
+from typing import List
+import numpy as np
 from torch.utils.data import Dataset, DataLoader
 import pyarrow.parquet as pq
 from torchvision import transforms
@@ -14,9 +17,11 @@ class SRRFCDataset(Dataset):
 
     """
 
-    def __init__(self, a_file: str, a_chunk_size: int):
+    def __init__(self, a_file: str, a_chunk_size: int, a_seq_cats: List[str] = ['A', 'C', 'G', 'U']):
         self.file: str = a_file
         self.chunk_size: int = a_chunk_size
+        self.seq_cats: List[str] = a_seq_cats
+        self.seq_cat_to_index: dict = {category: index for index, category in enumerate(self.seq_cats)}
         self.table = pq.read_table(self.file)
         self.chunks = self.table.to_batches(self.chunk_size)
         self.current_chunk_idx = 0
@@ -26,11 +31,13 @@ class SRRFCDataset(Dataset):
     def __len__(self):
         return self.table.num_rows
 
-    def __process_sequence(self, a_sequence: str) -> np.ndarray:
-        char_to_int = {'A': 1, 'G': 2, 'U': 3, 'C': 4}
-        int_sequence = [char_to_int[char] for char in a_sequence]
-        sequence_array = np.array(int_sequence)
-        return sequence_array
+    def __process_sequence(self, a_seq: str) -> np.ndarray:
+        # Convert the sequence to an array of category indices
+        seq_indices = np.array([self.seq_cat_to_index[cat] for cat in a_seq], dtype=int)
+
+        # Create a one-hot encoding array
+        one_hot_seq = (seq_indices[:, None] == np.arange(len(self.seq_cats))).astype(int)
+        return one_hot_seq
 
     def __getitem__(self, a_index):
         try:
