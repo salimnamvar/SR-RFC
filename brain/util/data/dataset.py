@@ -10,7 +10,7 @@ import numpy as np
 from torch.utils.data import Dataset, DataLoader
 import pyarrow.parquet as pq
 from torchvision import transforms
-from brain.util.data.datasetscheme import DatasetScheme, SampleIndex, SampleIndices
+from brain.util.data.scheme import DatasetScheme, SampleIndex, SampleIndices
 # endregion Imported Dependencies
 
 

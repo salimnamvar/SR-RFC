@@ -5,7 +5,7 @@
 
 # region Imported Dependencies
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List
 # endregion Imported Dependencies
 
 
