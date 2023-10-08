@@ -1,4 +1,4 @@
-""" BERT - Position-wise Feedforward Network
+""" BERTv0 - Position-wise Feedforward Network
 
 """
 
@@ -40,7 +40,7 @@ class PositionwiseFeedForward(nn.Module):
 
 
 class GELU(nn.Module):
-    """ BERT - Gaussian Error Linear Unit (GELU) activation function
+    """ BERTv0 - Gaussian Error Linear Unit (GELU) activation function
 
         This class is used to define GELU activation function for Position-wise Feed Forward Network.
     """

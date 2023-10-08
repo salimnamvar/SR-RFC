@@ -4,3 +4,5 @@
   - Explains the task and problem.
 - [Reactivity_prediction](https://www.kaggle.com/code/jonasthoenfaber/reactivity-prediction)
   - An ML example of solving the problem.
+- [PyTorch Pretrained Bert](https://github.com/maknotavailable/pytorch-pretrained-BERT)
+- [Python BERT](https://github.com/artest08/LateTemporalModeling3DCNN)

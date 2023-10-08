@@ -1,20 +1,18 @@
-""" BERT - Architectures
+""" BERTv0 - Architectures
 
 """
 
 # region Imported Dependencies
 from typing import Tuple
-
-import torch
 from torch import nn, Tensor
-from brain.nn.BERT.BB import BERT
+from brain.nn.BERTv0.BB import BERT
 # endregion Imported Dependencies
 
 
 class BArch0(nn.Module):
-    """ BERT Architecture - v.0
+    """ BERTv0 Architecture - v.0
 
-        This class is used to define the network topology that uses a BERT module as a block.
+        This class is used to define the network topology that uses a BERTv0 module as a block.
     """
 
     def __init__(self, a_in_size: Tuple[int, int] = (457, 4), a_out_size: int = 457) -> None:

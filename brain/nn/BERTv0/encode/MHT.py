@@ -1,4 +1,4 @@
-""" BERT - Multi-Head Attention Block
+""" BERTv0 - Multi-Head Attention Block
 
 """
 
@@ -14,9 +14,9 @@ import torch.nn.functional as F
 
 
 class MultiHeadedAttention(nn.Module):
-    """ BERT - Multi-headed Attention
+    """ BERTv0 - Multi-headed Attention
 
-        This class is used to define a Multi Heads Attention Module of the BERT model. Instead of performing a single
+        This class is used to define a Multi Heads Attention Module of the BERTv0 model. Instead of performing a single
         attention function with d-model-dimensional keys, values and queries, we found it beneficial to linearly project
         the queries, keys and values h times with different, learned linear projections to dk, dk and dv dimensions,
         respectively. On each of these projected versions of queries, keys and values we then perform the attention
@@ -30,7 +30,7 @@ class MultiHeadedAttention(nn.Module):
         """ Constructor
 
         :param a_h: An integer that specifies the head size of multi-head attention.
-        :param a_d_model: An integer that specifies the hidden size of transformer in the BERT model.
+        :param a_d_model: An integer that specifies the hidden size of transformer in the BERTv0 model.
         :param a_dropout: A float that specifies the dropout rate.
         """
         super().__init__()
@@ -71,9 +71,9 @@ class MultiHeadedAttention(nn.Module):
 
 
 class Attention(nn.Module):
-    """ BERT - Attention Module
+    """ BERTv0 - Attention Module
 
-        This class is used to define one Attention Module of the BERT model. It computes Scaled Dot Product Attention.
+        This class is used to define one Attention Module of the BERTv0 model. It computes Scaled Dot Product Attention.
         An attention function can be described as mapping a query and a set of key-value pairs to an output, where
         the query, keys, values, and output are all vectors. The output is computed as a weighted sum of the values,
         where the weight assigned to each value is computed by a compatibility function of the query with the

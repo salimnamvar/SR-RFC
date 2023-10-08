@@ -1,4 +1,4 @@
-""" BERT Backbone
+""" BERTv0 Backbone
 
 """
 
@@ -6,13 +6,13 @@
 from typing import Tuple
 import torch
 from torch import nn, Tensor
-from brain.nn.BERT.EMBD import BERTEmbedding
-from brain.nn.BERT.encode.TNet import TransformerBlock
+from brain.nn.BERTv0.EMBD import BERTEmbedding
+from brain.nn.BERTv0.encode.TNet import TransformerBlock
 # endregion Imported Dependencies
 
 
 class BERT(nn.Module):
-    """ BERT Model
+    """ BERTv0 Model
 
         This class is used to define a Bidirectional Encoder Representations from Transformers.
     """
@@ -23,7 +23,7 @@ class BERT(nn.Module):
 
         :param a_input_dim: An integer that specifies the vocab size of total words.
         :param a_max_len: An integer that specifies embedding size of token embedding.
-        :param a_hidden: An integer that specifies the BERT model hidden size.
+        :param a_hidden: An integer that specifies the BERTv0 model hidden size.
         :param a_n_layers: An integer that specifies the number of Transformer blocks(layers).
         :param a_attn_heads: An integer that specifies the number of attention heads.
         :param a_dropout: A float that specifies the dropout rate.
@@ -45,7 +45,7 @@ class BERT(nn.Module):
         # paper noted they used 4*hidden_size for ff_network_hidden_size
         self.feed_forward_hidden = a_hidden * 4
 
-        # embedding for BERT, sum of positional, segment, token embeddings
+        # embedding for BERTv0, sum of positional, segment, token embeddings
         self.embedding = BERTEmbedding(a_input_dim=a_input_dim, a_max_len=a_max_len + 1)
 
         # multi-layers transformer blocks, deep network

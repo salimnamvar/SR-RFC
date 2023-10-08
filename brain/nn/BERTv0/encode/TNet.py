@@ -1,18 +1,18 @@
-""" BERT - Transformer Block
+""" BERTv0 - Transformer Block
 
 """
 
 
 # region Imported Dependencies
 from torch import nn, Tensor
-from brain.nn.BERT.encode.FFN import PositionwiseFeedForward
-from brain.nn.BERT.encode.MHT import MultiHeadedAttention
-from brain.nn.BERT.encode.SLC import SublayerConnection
+from brain.nn.BERTv0.encode.FFN import PositionwiseFeedForward
+from brain.nn.BERTv0.encode.MHT import MultiHeadedAttention
+from brain.nn.BERTv0.encode.SLC import SublayerConnection
 # endregion Imported Dependencies
 
 
 class TransformerBlock(nn.Module):
-    """ BERT - Transformer Block
+    """ BERTv0 - Transformer Block
 
         This class is used to define a Bidirectional Encoder that is equal to Transformer (self-attention).
         Transformer = MultiHead_Attention + Feed_Forward with sublayer connection.

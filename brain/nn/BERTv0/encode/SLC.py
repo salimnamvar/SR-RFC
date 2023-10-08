@@ -1,4 +1,4 @@
-""" BERT - Sublayer Connection
+""" BERTv0 - Sublayer Connection
 
 """
 
@@ -10,10 +10,10 @@ from torch import nn, Tensor
 
 
 class SublayerConnection(nn.Module):
-    """ BERT - Sublayer Connection
+    """ BERTv0 - Sublayer Connection
 
         This class is used to define sublayer connection that is a residual connection followed by a layer norm. It
-        is used in the TransformerBlock of BERT.
+        is used in the TransformerBlock of BERTv0.
     """
     def __init__(self, a_size: int, a_dropout: float) -> None:
         """ Constructor
@@ -39,7 +39,7 @@ class SublayerConnection(nn.Module):
 
 
 class LayerNorm(nn.Module):
-    """ BERT - Normalization Layer
+    """ BERTv0 - Normalization Layer
 
     """
     def __init__(self, a_features: int, a_eps: float = 1e-6) -> None:

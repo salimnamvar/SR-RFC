@@ -1,4 +1,4 @@
-""" BERT Embedding Layers
+""" BERTv0 Embedding Layers
 
 """
 
@@ -10,9 +10,9 @@ from torch import nn, Tensor
 
 
 class BERTEmbedding(nn.Module):
-    """ BERT - Embedding
+    """ BERTv0 - Embedding
 
-        This class is used to define a BERT Embedding which is consisted with under features:
+        This class is used to define a BERTv0 Embedding which is consisted with under features:
             1. PositionalEmbedding : adding positional information using sin, cos.
             2. Sum of all these features are output of BERTEmbedding.
     """
@@ -39,9 +39,9 @@ class BERTEmbedding(nn.Module):
 
 
 class LearnedPositionalEmbedding(nn.Module):
-    """ BERT - Learned Positional Embedding
+    """ BERTv0 - Learned Positional Embedding
 
-        This class is used to define a Learned Positional Embedding for BERT Embedding.
+        This class is used to define a Learned Positional Embedding for BERTv0 Embedding.
     """
 
     def __init__(self, a_d_model: int, a_max_len: int = 512) -> None:
