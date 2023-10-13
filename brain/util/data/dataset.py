@@ -84,12 +84,3 @@ class SRRFCDataset(Dataset):
         except Exception as e:
             raise e
         return input_ids, attention_mask, token_type_ids, reactivity
-
-
-if __name__ == '__main__':
-    if False:
-        dataset = SRRFCDataset(a_file='G:/Challenges/RNA/data/train_data.parquet', a_chunk_size=1000)
-        dataloader = DataLoader(dataset=dataset, batch_size=1000, shuffle=True,
-                                collate_fn=lambda batch: tuple(zip(*batch)))
-        for i, (input_ids, attention_mask, token_type_ids, reactivity) in enumerate(dataloader):
-            print(f'Data Sample Index: {i}')
