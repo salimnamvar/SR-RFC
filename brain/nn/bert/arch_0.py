@@ -12,7 +12,7 @@ from transformers import BertModel
 class Bert(nn.Module):
     def __init__(self) -> None:
         super().__init__()
-        self.bert_layer: BertModel = BertModel()
+        self.bert_layer: BertModel = BertModel.from_pretrained('bert-base-uncased')
         self.dropout_layer: nn.Dropout = nn.Dropout(0.3)
         self.reactivity_layer: nn.Linear = nn.Linear(768, 457)
 
