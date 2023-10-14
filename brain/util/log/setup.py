@@ -9,11 +9,11 @@ from brain.util.cfg.config import BrainConfig
 
 
 class SetupLogger:
-    def __init__(self, a_cfg: BrainConfig):
-        self.filename: str = a_cfg.log.filename
-        self.name: str = a_cfg.log.name
-        self.level_name: str = a_cfg.log.level_name
-        self.format: str = a_cfg.log.format
+    def __init__(self, a_filename: str, a_name: str, a_level: str, a_format: str):
+        self.filename: str = a_filename
+        self.name: str = a_name
+        self.level: str = a_level
+        self.format: str = a_format
         self.levels: dict = {
             "DEBUG": logging.DEBUG,
             "INFO": logging.INFO,
@@ -27,8 +27,8 @@ class SetupLogger:
 
     def __setup(self) -> None:
         try:
-            self.logger = logging.getLogger(self.level_name)
-            level = self.levels.get(self.level_name.upper(), logging.INFO)
+            self.logger = logging.getLogger(self.level)
+            level = self.levels.get(self.level.upper(), logging.INFO)
             self.logger.setLevel(level)
             file_handler = logging.FileHandler(self.filename)
             file_handler.setLevel(level)
