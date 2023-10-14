@@ -14,6 +14,8 @@ def parser(text):
         kwargs = {}
         key_value_pairs = text[1:-1].split(',')
         for pair in key_value_pairs:
+            if len(pair) == 0:
+                continue
             key, value = pair.split(':')
             key = key.strip()
             value = value.strip()
