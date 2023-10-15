@@ -20,16 +20,19 @@ class SRRFCDataset(Dataset):
 
     """
 
-    def __init__(self, a_file: str, a_chunk_size: int, a_max_length: int = 457):
+    def __init__(self, a_file: str, a_chunk_size: int, a_max_length: int = 457, a_inc_exp_type: bool = False):
         self.file: str = a_file
         self.chunk_size: int = a_chunk_size
         self.max_length: int = a_max_length
+        self.inc_exp_type: bool = a_inc_exp_type
         self.table = pq.read_table(self.file)
         self.chunks = self.table.to_batches(self.chunk_size)
         self.sample_indices = SampleIndices()
         self.__init_samples()
         self.dataset_scheme: DatasetScheme = DatasetScheme(a_feat=self.chunks[0].to_pandas().columns.tolist())
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
+        self.exp_map: dict = {'DMS_MaP': '0',
+                              '2A3_MaP': '1'}
 
     def __init_samples(self):
         sample_counter = 0
@@ -42,18 +45,19 @@ class SRRFCDataset(Dataset):
     def __len__(self):
         return self.table.num_rows
 
-    def __preprocess(self, a_sequence: str, a_reactivity: List[float]) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
+    def __preprocess(self, a_sequence: str, a_reactivity: List[float],
+                     a_experiment: str) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
         reactivity = torch.tensor(np.array(a_reactivity[:len(a_sequence)], dtype=float))
 
         # Sequence Tokenization
-        sequence = ' '.join(a_sequence)
-        inputs = self.tokenizer.encode_plus(text=sequence, text_pair=None, add_special_tokens=True,
-                                            max_length=self.max_length,
-                                            padding='max_length', return_token_type_ids=True,
-                                            truncation=True)
+        sequence_1 = ' '.join(a_sequence)
+        sequence_2 = self.exp_map[a_experiment] if self.inc_exp_type else None
+        inputs = self.tokenizer.encode_plus(text=sequence_1, text_pair=sequence_2, add_special_tokens=True,
+                                            max_length=self.max_length, padding='max_length',
+                                            return_token_type_ids=True, truncation=True)
         input_ids = torch.tensor(inputs['input_ids'], dtype=torch.long)
         attention_mask = torch.tensor(inputs['attention_mask'], dtype=torch.long)
-        token_type_ids = torch.tensor(inputs["token_type_ids"], dtype=torch.long)
+        token_type_ids = torch.tensor(inputs['token_type_ids'], dtype=torch.long)
 
         # Reactivity Nan values
         nan_ids = torch.where(torch.isnan(reactivity))
@@ -67,20 +71,21 @@ class SRRFCDataset(Dataset):
 
         return input_ids, attention_mask, token_type_ids, padded_reactivity
 
-    def __get_sample(self, a_index: int) -> Tuple[str, List[float]]:
+    def __get_sample(self, a_index: int) -> Tuple[str, List[float], str]:
         smp = self.sample_indices[a_index]
         sequence = self.chunks[smp.chunk_idx][self.dataset_scheme.input][smp.in_chunk_idx].as_py()
+        experiment = self.chunks[smp.chunk_idx][self.dataset_scheme.experiment][smp.in_chunk_idx].as_py()
         reactivity = [self.chunks[smp.chunk_idx][label][smp.in_chunk_idx].as_py() for label in
                       self.dataset_scheme.label]
-        return sequence, reactivity
+        return sequence, reactivity, experiment
 
     def __getitem__(self, a_index) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
         try:
             # Get sample
-            sequence, reactivity = self.__get_sample(a_index)
+            sequence, reactivity, experiment = self.__get_sample(a_index)
 
             # Preprocess sample
-            input_ids, attention_mask, token_type_ids, reactivity = self.__preprocess(sequence, reactivity)
+            input_ids, attention_mask, token_type_ids, reactivity = self.__preprocess(sequence, reactivity, experiment)
         except Exception as e:
             raise e
         return input_ids, attention_mask, token_type_ids, reactivity
