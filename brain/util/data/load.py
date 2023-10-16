@@ -4,7 +4,9 @@
 
 
 # region Imported Dependencies
-from typing import List, Tuple, Union
+from dataclasses import dataclass
+from typing import List, Tuple, Union, Dict
+from torch.utils.data import DataLoader
 # endregion Imported Dependencies
 
 
@@ -31,3 +33,32 @@ def load_indices(a_train_idx_file: Union[str, List[str]],
                 val_idx.append(int(line.strip()))  # Convert the line to an integer and add it to the list
 
     return train_idx, val_idx
+
+
+@dataclass
+class Loader:
+    name: str
+    train: DataLoader = None
+    val: DataLoader = None
+    test: DataLoader = None
+
+
+class Loaders:
+    def __init__(self) -> None:
+        self._items: Dict[str] = {}
+
+    def append(self, a_loader: Loader) -> None:
+        self._items[a_loader.name] = a_loader
+
+    def pop(self, a_key: str) -> None:
+        self._items.pop(a_key)
+
+    @property
+    def items(self) -> dict:
+        return self._items
+
+    def __getitem__(self, a_key: str) -> Loader:
+        return self._items[a_key]
+
+    def __len__(self) -> int:
+        return len(self._items)
