@@ -19,6 +19,7 @@ class DatasetScheme:
         self.features = a_feat
         self.label = [i for i, col in enumerate(self.features) if 'reactivity' in col and 'error' not in col]
         self.input = self.features.index('sequence')
+        self.experiment = self.features.index('experiment_type')
 
 
 @dataclass

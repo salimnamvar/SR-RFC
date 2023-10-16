@@ -15,8 +15,8 @@ from brain.util.data.scheme import DatasetScheme, SampleIndex, SampleIndices
 # endregion Imported Dependencies
 
 
-class SRRFCDataset(Dataset):
-    """ Stanford Ribonanza RNA Folding Dataset
+class TrainDataset(Dataset):
+    """ Stanford Ribonanza RNA Folding Training Dataset
 
     """
 
@@ -55,9 +55,10 @@ class SRRFCDataset(Dataset):
         inputs = self.tokenizer.encode_plus(text=sequence_1, text_pair=sequence_2, add_special_tokens=True,
                                             max_length=self.max_length, padding='max_length',
                                             return_token_type_ids=True, truncation=True)
-        input_ids = torch.tensor(inputs['input_ids'], dtype=torch.long)
-        attention_mask = torch.tensor(inputs['attention_mask'], dtype=torch.long)
-        token_type_ids = torch.tensor(inputs['token_type_ids'], dtype=torch.long)
+        input_ids = torch.tensor(inputs['input_ids'], dtype=torch.int)
+        attention_mask = torch.tensor(inputs['attention_mask'], dtype=torch.int)
+        token_type_ids = torch.tensor(inputs['token_type_ids'], dtype=torch.int)
+        # torch.zeros_like(attention_mask, dtype=torch.long)
 
         # Reactivity Nan values
         nan_ids = torch.where(torch.isnan(reactivity))
@@ -66,7 +67,7 @@ class SRRFCDataset(Dataset):
         reactivity[nan_ids] = 0
 
         # Reactivity Padding
-        padded_reactivity = torch.zeros(self.max_length)
+        padded_reactivity = torch.zeros(self.max_length, dtype=torch.float32)
         padded_reactivity[:len(reactivity)] = reactivity
 
         return input_ids, attention_mask, token_type_ids, padded_reactivity
@@ -79,7 +80,7 @@ class SRRFCDataset(Dataset):
                       self.dataset_scheme.label]
         return sequence, reactivity, experiment
 
-    def __getitem__(self, a_index) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
+    def __getitem__(self, a_index) -> Tuple[Tuple[Tensor, Tensor, Tensor], Tensor]:
         try:
             # Get sample
             sequence, reactivity, experiment = self.__get_sample(a_index)
@@ -88,4 +89,4 @@ class SRRFCDataset(Dataset):
             input_ids, attention_mask, token_type_ids, reactivity = self.__preprocess(sequence, reactivity, experiment)
         except Exception as e:
             raise e
-        return input_ids, attention_mask, token_type_ids, reactivity
+        return (input_ids, attention_mask, token_type_ids), reactivity
