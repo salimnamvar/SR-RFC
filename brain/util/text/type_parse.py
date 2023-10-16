@@ -22,6 +22,15 @@ def parser(text):
             kwargs[key] = parser(value)  # Recursively parse the value
         return kwargs
 
+    if text.startswith('[') and text.endswith(']'):
+        args = []
+        items = text[1:-1].split(',')
+        for item in items:
+            if len(item) == 0:
+                continue
+            args.append(parser(item.strip()))
+        return args
+
     # Check for integers
     if re.match(r'^-?\d+$', text):
         return int(text)
