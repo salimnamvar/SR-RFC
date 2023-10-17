@@ -54,11 +54,23 @@ class Loaders:
         self._items.pop(a_key)
 
     @property
-    def items(self) -> dict:
-        return self._items
+    def items(self):
+        return self._items.items()
 
     def __getitem__(self, a_key: str) -> Loader:
         return self._items[a_key]
 
     def __len__(self) -> int:
         return len(self._items)
+
+    @property
+    def train(self) -> List[DataLoader]:
+        return [loader.train for name, loader in self._items.items()]
+
+    @property
+    def val(self) -> List[DataLoader]:
+        return [loader.val for name, loader in self._items.items()]
+
+    @property
+    def test(self) -> List[DataLoader]:
+        return [loader.test for name, loader in self._items.items()]
