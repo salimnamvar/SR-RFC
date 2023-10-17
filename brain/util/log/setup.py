@@ -4,16 +4,20 @@
 
 # region Imported Dependencies
 import logging
+
 from brain.util.cfg.config import BrainConfig
+
+
 # endregion Imported Dependencies
 
 
 class SetupLogger:
-    def __init__(self, a_filename: str, a_name: str, a_level: str, a_format: str):
+    def __init__(self, a_filename: str):
+        self.cfg: BrainConfig = BrainConfig.get_instance()
         self.filename: str = a_filename
-        self.name: str = a_name
-        self.level: str = a_level
-        self.format: str = a_format
+        self.name: str = self.cfg.log.name
+        self.level: str = self.cfg.log.level
+        self.format: str = self.cfg.log.format
         self.levels: dict = {
             "DEBUG": logging.DEBUG,
             "INFO": logging.INFO,
@@ -27,7 +31,7 @@ class SetupLogger:
 
     def __setup(self) -> None:
         try:
-            self.logger = logging.getLogger(self.level)
+            self.logger = logging.getLogger(self.name)
             level = self.levels.get(self.level.upper(), logging.INFO)
             self.logger.setLevel(level)
             file_handler = logging.FileHandler(self.filename)
