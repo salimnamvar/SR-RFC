@@ -11,6 +11,7 @@ from torch import Tensor
 from torch.utils.data import Dataset
 import pyarrow.parquet as pq
 from transformers import BertTokenizer
+
 from brain.util.data.scheme import DatasetScheme, SampleIndex, SampleIndices
 # endregion Imported Dependencies
 
@@ -58,7 +59,6 @@ class TrainDataset(Dataset):
         input_ids = torch.tensor(inputs['input_ids'], dtype=torch.int)
         attention_mask = torch.tensor(inputs['attention_mask'], dtype=torch.int)
         token_type_ids = torch.tensor(inputs['token_type_ids'], dtype=torch.int)
-        # torch.zeros_like(attention_mask, dtype=torch.long)
 
         # Reactivity Nan values
         nan_ids = torch.where(torch.isnan(reactivity))
