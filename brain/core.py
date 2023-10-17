@@ -8,7 +8,6 @@
 import importlib
 from brain.task.base import BaseTask
 from brain.util.cfg.config import BrainConfig
-from brain.util.log.setup import SetupLogger
 # endregion Imported Dependencies
 
 
@@ -17,7 +16,6 @@ class Sys:
         self.cfg: BrainConfig = BrainConfig.get_instance(a_cfg=a_cfg)
         self.task: BaseTask = None
         self.__create_task()
-        SetupLogger(a_cfg=self.cfg)
 
     def __create_task(self):
         module_name = f"brain.task.{self.cfg.tsk.name.lower()}.core"
