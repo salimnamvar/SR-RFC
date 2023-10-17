@@ -2,11 +2,12 @@
 
 """
 
-
 # region Imported Dependencies
 import torch
 from torch import nn
 from transformers import BertModel
+
+
 # endregion Imported Dependencies
 
 
