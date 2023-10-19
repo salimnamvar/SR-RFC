@@ -17,6 +17,7 @@ class Arch(nn.Module):
         self.bert_layer: BertModel = BertModel.from_pretrained('bert-base-uncased')
         self.dropout_layer: nn.Dropout = nn.Dropout(0.1)
         self.reactivity_layer: nn.Linear = nn.Linear(768, a_max_length)
+        self.sigmoid_layer: nn.Sigmoid = nn.Sigmoid()
 
     def forward(self, a_input_ids: torch.Tensor, a_attention_mask: torch.Tensor,
                 a_token_type_ids: torch.Tensor) -> torch.Tensor:
@@ -25,3 +26,9 @@ class Arch(nn.Module):
         output2 = self.dropout_layer(output1)
         output = self.reactivity_layer(output2)
         return output
+
+    def test(self, a_input_ids: torch.Tensor, a_attention_mask: torch.Tensor,
+             a_token_type_ids: torch.Tensor) -> torch.Tensor:
+        output = self.forward(a_input_ids, a_attention_mask, a_token_type_ids)
+        output_sig = self.sigmoid_layer(output)
+        return output_sig
