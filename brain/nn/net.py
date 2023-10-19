@@ -108,7 +108,7 @@ class Net:
             epoch_loss += loss.item() * targets.size(0)
             loss.backward()
             self.optim.step()
-            a_writer.add_scalar('data/train_batch_loss', loss, i)
+            # a_writer.add_scalar('data/train_batch_loss', loss, i)
         epoch_loss /= len(a_data_loader)
         return epoch_loss
 
@@ -123,7 +123,7 @@ class Net:
                 loss = self.loss(outputs, targets)
                 self.logger.info(f"Batch {i}'s Validation Loss is {loss.item()}.")
                 epoch_loss += loss.item() * targets.size(0)
-                a_writer.add_scalar('data/val_batch_loss', loss, i)
+                # a_writer.add_scalar('data/val_batch_loss', loss, i)
             epoch_loss /= len(a_data_loader)
         self.lrs.step(epoch_loss)
         return epoch_loss
