@@ -29,10 +29,7 @@ class TrainDataset(Dataset):
         self.max_length: int = a_max_length
         self.inc_exp_type: bool = a_inc_exp_type
         self.table = pq.read_table(self.file)
-        self.chunks = self.table.to_batches(self.chunk_size)
-        self.sample_indices = SampleIndices()
-        self.__init_samples()
-        self.dataset_scheme: DatasetScheme = DatasetScheme(a_feat=self.chunks[0].to_pandas().columns.tolist())
+        self.dataset_scheme: DatasetScheme = DatasetScheme(a_feat=self.table.column_names)
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
         self.exp_map: dict = {'DMS_MaP': '0',
                               '2A3_MaP': '1'}
@@ -75,11 +72,11 @@ class TrainDataset(Dataset):
         return input_ids, attention_mask, token_type_ids, padded_reactivity
 
     def __get_sample(self, a_index: int) -> Tuple[str, List[float], str]:
-        smp = self.sample_indices[a_index]
-        sequence = self.chunks[smp.chunk_idx][self.dataset_scheme.input][smp.in_chunk_idx].as_py()
-        experiment = self.chunks[smp.chunk_idx][self.dataset_scheme.experiment][smp.in_chunk_idx].as_py()
-        reactivity = [self.chunks[smp.chunk_idx][label][smp.in_chunk_idx].as_py() for label in
-                      self.dataset_scheme.label]
+        t_row = self.table.slice(a_index, 1)
+        row = t_row.to_pylist()[0]
+        sequence = row[self.dataset_scheme.input.name]
+        experiment = row[self.dataset_scheme.experiment.name]
+        reactivity = [row[label.name] for label in self.dataset_scheme.label]
         return sequence, reactivity, experiment
 
     def __getitem__(self, a_index) -> Tuple[Tuple[Tensor, Tensor, Tensor], Tensor]:
@@ -121,7 +118,7 @@ class TestDataset(Dataset):
         return input_ids, attention_mask, token_type_ids
 
     def __get_sample(self, a_index: int) -> Tuple[int, int, str]:
-        t_row = self.table.slice(a_index, a_index + 1)
+        t_row = self.table.slice(a_index, 1)
         row = t_row.to_pylist()[0]
         id_min = row['id_min']
         id_max = row['id_max']
