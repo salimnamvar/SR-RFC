@@ -16,7 +16,7 @@ def parser(text):
         for pair in key_value_pairs:
             if len(pair) == 0:
                 continue
-            key, value = pair.split(':')
+            key, value = pair.split(':', 1)
             key = key.strip()
             value = value.strip()
             kwargs[key] = parser(value)  # Recursively parse the value
