@@ -13,6 +13,8 @@ import pyarrow.parquet as pq
 from transformers import BertTokenizer
 
 from brain.util.data.scheme import DatasetScheme, SampleIndex, SampleIndices
+
+
 # endregion Imported Dependencies
 
 
@@ -90,3 +92,49 @@ class TrainDataset(Dataset):
         except Exception as e:
             raise e
         return (input_ids, attention_mask, token_type_ids), reactivity
+
+
+class TestDataset(Dataset):
+    def __init__(self, a_file: str, a_exp: str, a_max_length: int = 457, a_inc_exp_type: bool = False):
+        self.file: str = a_file
+        self.exp: str = a_exp
+        self.max_length: int = a_max_length
+        self.inc_exp_type: bool = a_inc_exp_type
+        self.table = pq.read_table(self.file)
+        self.exp_map: dict = {'DMS_MaP': '0',
+                              '2A3_MaP': '1'}
+        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
+
+    def __len__(self):
+        return self.table.num_rows
+
+    def __preprocess(self, a_sequence: str) -> Tuple[Tensor, Tensor, Tensor]:
+        # Sequence Tokenization
+        sequence_1 = ' '.join(a_sequence)
+        sequence_2 = self.exp_map[self.exp] if self.inc_exp_type else None
+        inputs = self.tokenizer.encode_plus(text=sequence_1, text_pair=sequence_2, add_special_tokens=True,
+                                            max_length=self.max_length, padding='max_length',
+                                            return_token_type_ids=True, truncation=True)
+        input_ids = torch.tensor(inputs['input_ids'], dtype=torch.int)
+        attention_mask = torch.tensor(inputs['attention_mask'], dtype=torch.int)
+        token_type_ids = torch.tensor(inputs['token_type_ids'], dtype=torch.int)
+        return input_ids, attention_mask, token_type_ids
+
+    def __get_sample(self, a_index: int) -> Tuple[int, int, str]:
+        t_row = self.table.slice(a_index, a_index + 1)
+        row = t_row.to_pylist()[0]
+        id_min = row['id_min']
+        id_max = row['id_max']
+        sequence = row['sequence']
+        return id_min, id_max, sequence
+
+    def __getitem__(self, a_index) -> Tuple[int, int, Tensor, Tensor, Tensor]:
+        try:
+            # Get sample
+            id_min, id_max, sequence = self.__get_sample(a_index)
+
+            # Preprocess sample
+            input_ids, attention_mask, token_type_ids = self.__preprocess(sequence)
+        except Exception as e:
+            raise e
+        return id_min, id_max, input_ids, attention_mask, token_type_ids
