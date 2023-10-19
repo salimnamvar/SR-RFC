@@ -2,14 +2,19 @@
 
 """
 
-
 # region Imported Dependencies
 import importlib
 import logging
 from typing import Dict
+
+import numpy as np
+import pandas as pd
 import torch
 from torch import nn, optim
 from torch.utils.data import DataLoader
+from torch.utils.tensorboard import SummaryWriter
+from tqdm import tqdm
+
 from brain.nn.util.param import Param
 from brain.util.cfg.config import BrainConfig
 
@@ -89,7 +94,7 @@ class Net:
 
         self.loss = loss(**self.loss_param.kwargs)
 
-    def train(self, a_data_loader: DataLoader) -> float:
+    def train(self, a_data_loader: DataLoader, a_writer: SummaryWriter) -> float:
         self.arch.train()
         epoch_loss: float = 0.0
         for i, (inputs, targets) in enumerate(a_data_loader):
@@ -103,10 +108,11 @@ class Net:
             epoch_loss += loss.item() * targets.size(0)
             loss.backward()
             self.optim.step()
+            a_writer.add_scalar('data/train_batch_loss', loss, i)
         epoch_loss /= len(a_data_loader)
         return epoch_loss
 
-    def validate(self, a_data_loader: DataLoader) -> float:
+    def validate(self, a_data_loader: DataLoader, a_writer: SummaryWriter) -> float:
         self.arch.eval()
         epoch_loss: float = 0.0
         with torch.no_grad():
@@ -117,12 +123,30 @@ class Net:
                 loss = self.loss(outputs, targets)
                 self.logger.info(f"Batch {i}'s Validation Loss is {loss.item()}.")
                 epoch_loss += loss.item() * targets.size(0)
+                a_writer.add_scalar('data/val_batch_loss', loss, i)
             epoch_loss /= len(a_data_loader)
         self.lrs.step(epoch_loss)
         return epoch_loss
 
-    def test(self):
-        NotImplemented
+    def test(self, a_weights: str, a_data_loader: DataLoader) -> pd.DataFrame:
+        # Load the trained weights
+        weights = torch.load(a_weights)['state_dict']
+        self.arch.load_state_dict(weights)
+
+        results = pd.DataFrame(columns=['id', 'reactivity'])
+
+        self.arch.eval()
+        with torch.no_grad():
+            for i, (inputs, (ids_min, ids_max)) in tqdm(enumerate(a_data_loader), desc='Testing is in process'):
+                inputs = [input_tensor.to(self.device, dtype=torch.long) for input_tensor in inputs]
+                outputs = self.arch(*inputs)
+
+                for j in range(len(outputs)):
+                    ids = np.arange(ids_min[j], ids_max[j])
+                    df = pd.DataFrame({'id': ids, 'reactivity': outputs.cpu()[j][:len(ids)]})
+                    results = pd.concat([results, df])
+        results = results.set_index('id')
+        return results
 
 
 class Nets:
