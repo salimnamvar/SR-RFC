@@ -128,7 +128,7 @@ class TestDataset(Dataset):
         sequence = row['sequence']
         return id_min, id_max, sequence
 
-    def __getitem__(self, a_index) -> Tuple[int, int, Tensor, Tensor, Tensor]:
+    def __getitem__(self, a_index) -> Tuple[Tuple[Tensor, Tensor, Tensor], Tuple[int, int]]:
         try:
             # Get sample
             id_min, id_max, sequence = self.__get_sample(a_index)
@@ -137,4 +137,4 @@ class TestDataset(Dataset):
             input_ids, attention_mask, token_type_ids = self.__preprocess(sequence)
         except Exception as e:
             raise e
-        return id_min, id_max, input_ids, attention_mask, token_type_ids
+        return (input_ids, attention_mask, token_type_ids), (id_min, id_max)
