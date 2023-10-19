@@ -45,17 +45,19 @@ class Epochs:
 
 
 class Experiment:
-    def __init__(self, a_root_path: str, a_cfg_name: str, a_run: int):
+    def __init__(self, a_root_path: str, a_cfg_name: str, a_run: int, a_model_name: str):
         self.cfg_name: str = a_cfg_name
         self.run: int = a_run
         self.epochs: Epochs = Epochs()
         self.root_path: str = a_root_path
+        self.model_name: str = a_model_name
         self.time: datetime.datetime = datetime.datetime.now()
         self.id: int = len(os.listdir(self.root_path))
-        self.path: str = os.path.join(self.root_path, 'EXP-{}_{}_{:%Y-%m-%d-%H-%M-%p}_Run-{}'.format(self.id,
-                                                                                                     self.cfg_name,
-                                                                                                     self.time,
-                                                                                                     self.run))
+        self.path: str = os.path.join(self.root_path, 'EXP-{}_{}_{}_{:%Y-%m-%d-%H-%M-%p}_Run-{}'.format(self.id,
+                                                                                                        self.model_name,
+                                                                                                        self.cfg_name,
+                                                                                                        self.time,
+                                                                                                        self.run))
         os.makedirs(self.path, exist_ok=True)
         SetupLogger(a_filename=os.path.join(self.path, 'exp.log'))
 
@@ -70,8 +72,9 @@ class Experiments:
         self.root_path: str = a_root_path
         self._items: List[Experiment] = []
 
-    def append(self, a_cfg_name: str, a_run: int) -> None:
-        self._items.append(Experiment(a_cfg_name=a_cfg_name, a_run=a_run, a_root_path=self.root_path))
+    def append(self, a_cfg_name: str, a_run: int, a_model_name: str) -> None:
+        self._items.append(Experiment(a_cfg_name=a_cfg_name, a_run=a_run, a_root_path=self.root_path,
+                                      a_model_name=a_model_name))
 
     @property
     def items(self) -> List[Experiment]:
