@@ -5,6 +5,8 @@
 
 # region Imported Dependencies
 import logging
+import os
+
 import torch
 from torch.utils.data import DataLoader, SubsetRandomSampler
 from torch.utils.tensorboard import SummaryWriter
@@ -54,7 +56,8 @@ class Task(BaseTask):
             train_sampler = SubsetRandomSampler(indices=train_idx)
             val_sampler = SubsetRandomSampler(indices=val_idx)
             train_loader = DataLoader(dataset=dataset, batch_size=self.cfg.train.batch, sampler=train_sampler)
-            val_loader = DataLoader(dataset=dataset, batch_size=self.cfg.val.batch, sampler=val_sampler)
+            val_loader = DataLoader(dataset=dataset, batch_size=self.cfg.val.batch, sampler=val_sampler,
+                                    pin_memory=True, num_workers=os.cpu_count())
             loader = Loader(name='SRRFC', train=train_loader, val=val_loader)
             self.loaders.append(loader)
 
@@ -65,7 +68,8 @@ class Task(BaseTask):
             train_sampler_dms = SubsetRandomSampler(indices=train_idx_dms)
             val_sampler_dms = SubsetRandomSampler(indices=val_idx_dms)
             train_loader_dms = DataLoader(dataset=dataset, batch_size=self.cfg.train.batch, sampler=train_sampler_dms)
-            val_loader_dms = DataLoader(dataset=dataset, batch_size=self.cfg.val.batch, sampler=val_sampler_dms)
+            val_loader_dms = DataLoader(dataset=dataset, batch_size=self.cfg.val.batch, sampler=val_sampler_dms,
+                                        pin_memory=True, num_workers=os.cpu_count())
             loader_dms = Loader(name='DMS', train=train_loader_dms, val=val_loader_dms)
             self.loaders.append(loader_dms)
 
@@ -75,7 +79,8 @@ class Task(BaseTask):
             train_sampler_2a3 = SubsetRandomSampler(indices=train_idx_2a3)
             val_sampler_2a3 = SubsetRandomSampler(indices=val_idx_2a3)
             train_loader_2a3 = DataLoader(dataset=dataset, batch_size=self.cfg.train.batch, sampler=train_sampler_2a3)
-            val_loader_2a3 = DataLoader(dataset=dataset, batch_size=self.cfg.val.batch, sampler=val_sampler_2a3)
+            val_loader_2a3 = DataLoader(dataset=dataset, batch_size=self.cfg.val.batch, sampler=val_sampler_2a3,
+                                        pin_memory=True, num_workers=os.cpu_count())
             loader_2a3 = Loader(name='2A3', train=train_loader_2a3, val=val_loader_2a3)
             self.loaders.append(loader_2a3)
 
