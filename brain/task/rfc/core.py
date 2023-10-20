@@ -90,7 +90,8 @@ class Task(BaseTask):
             self.__init_model(a_name=name)
             for run in range(0, self.cfg.train.run):
                 self.logger.info(f'Experiment Run {run} is started.')
-                self.exps.append(a_cfg_name=self.cfg.cfg.name, a_run=run, a_model_name=self.model.name)
+                self.exps.append(a_cfg_name=self.cfg.cfg.name, a_run=run, a_model_name=self.model.name,
+                                 a_cfg_path=self.cfg.cfg_path)
                 writer = SummaryWriter(self.exps[-1].path)
                 for ep in range(0, self.cfg.train.epoch):
                     self.logger.info(f"Run {run}'s Epoch {ep} is started.")
