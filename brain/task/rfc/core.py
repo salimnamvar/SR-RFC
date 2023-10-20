@@ -5,12 +5,10 @@
 
 # region Imported Dependencies
 import logging
-import os
-
 import torch
 from torch.utils.data import DataLoader, SubsetRandomSampler
 from torch.utils.tensorboard import SummaryWriter
-from brain.nn.net import Net, Nets
+from brain.nn.net import Net
 from brain.nn.util.param import Param
 from brain.task.base import BaseTask
 from brain.util.cfg.config import BrainConfig
@@ -57,7 +55,7 @@ class Task(BaseTask):
             val_sampler = SubsetRandomSampler(indices=val_idx)
             train_loader = DataLoader(dataset=dataset, batch_size=self.cfg.train.batch, sampler=train_sampler)
             val_loader = DataLoader(dataset=dataset, batch_size=self.cfg.val.batch, sampler=val_sampler,
-                                    pin_memory=True, num_workers=os.cpu_count())
+                                    pin_memory=True)
             loader = Loader(name='SRRFC', train=train_loader, val=val_loader)
             self.loaders.append(loader)
 
@@ -67,9 +65,10 @@ class Task(BaseTask):
                                                       a_val_idx_file=self.cfg.data.val_idx[0])
             train_sampler_dms = SubsetRandomSampler(indices=train_idx_dms)
             val_sampler_dms = SubsetRandomSampler(indices=val_idx_dms)
-            train_loader_dms = DataLoader(dataset=dataset, batch_size=self.cfg.train.batch, sampler=train_sampler_dms)
+            train_loader_dms = DataLoader(dataset=dataset, batch_size=self.cfg.train.batch, sampler=train_sampler_dms,
+                                          pin_memory=True)
             val_loader_dms = DataLoader(dataset=dataset, batch_size=self.cfg.val.batch, sampler=val_sampler_dms,
-                                        pin_memory=True, num_workers=os.cpu_count())
+                                        pin_memory=True)
             loader_dms = Loader(name='DMS', train=train_loader_dms, val=val_loader_dms)
             self.loaders.append(loader_dms)
 
@@ -78,9 +77,10 @@ class Task(BaseTask):
                                                       a_val_idx_file=self.cfg.data.val_idx[1])
             train_sampler_2a3 = SubsetRandomSampler(indices=train_idx_2a3)
             val_sampler_2a3 = SubsetRandomSampler(indices=val_idx_2a3)
-            train_loader_2a3 = DataLoader(dataset=dataset, batch_size=self.cfg.train.batch, sampler=train_sampler_2a3)
+            train_loader_2a3 = DataLoader(dataset=dataset, batch_size=self.cfg.train.batch, sampler=train_sampler_2a3,
+                                          pin_memory=True)
             val_loader_2a3 = DataLoader(dataset=dataset, batch_size=self.cfg.val.batch, sampler=val_sampler_2a3,
-                                        pin_memory=True, num_workers=os.cpu_count())
+                                        pin_memory=True)
             loader_2a3 = Loader(name='2A3', train=train_loader_2a3, val=val_loader_2a3)
             self.loaders.append(loader_2a3)
 
@@ -105,15 +105,15 @@ class Task(BaseTask):
                                                              'val_loss': val_loss,
                                                              'train_loss': train_loss,
                                                              'optimizer': self.model.optim.state_dict()})
-                    #writer.add_scalar('data/train_epoch_loss', train_loss, ep)
-                    #writer.add_scalar('data/val_epoch_loss', val_loss, ep)
+                    writer.add_scalar('data/train_epoch_loss', train_loss, ep)
+                    writer.add_scalar('data/val_epoch_loss', val_loss, ep)
                 writer.close()
 
     def __init_test_loader(self):
         # DMS Dataset
         dataset_dms = TestDataset(a_file=self.cfg.data.test, a_exp='DMS_MaP', a_max_length=self.cfg.data.max_length,
                                   a_inc_exp_type=self.cfg.data.inc_exp_type)
-        data_loader_dms = DataLoader(dataset=dataset_dms, batch_size=self.cfg.test.batch)
+        data_loader_dms = DataLoader(dataset=dataset_dms, batch_size=self.cfg.test.batch, pin_memory=True)
         loader_dms = Loader(name='DMS', test=data_loader_dms)
         self.loaders.append(loader_dms)
 
