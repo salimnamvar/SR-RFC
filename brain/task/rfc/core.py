@@ -94,8 +94,8 @@ class Task(BaseTask):
                 writer = SummaryWriter(self.exps[-1].path)
                 for ep in range(0, self.cfg.train.epoch):
                     self.logger.info(f"Run {run}'s Epoch {ep} is started.")
-                    train_loss = self.model.train(a_data_loader=loader.train, a_writer=writer)
-                    val_loss = self.model.validate(a_data_loader=loader.val, a_writer=writer)
+                    train_loss = self.model.train(a_data_loader=loader.train, a_writer=writer, a_epoch=ep)
+                    val_loss = self.model.validate(a_data_loader=loader.val, a_writer=writer, a_epoch=ep)
                     self.logger.info(
                         f"Run {run}'s Epoch {ep}'s Training Loss is {train_loss} and Validation Loss is {val_loss}.")
                     self.exps.experiment.save_epoch(a_loss=val_loss, a_epoch=ep,

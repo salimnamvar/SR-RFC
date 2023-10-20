@@ -94,10 +94,10 @@ class Net:
 
         self.loss = loss(**self.loss_param.kwargs)
 
-    def train(self, a_data_loader: DataLoader, a_writer: SummaryWriter) -> float:
+    def train(self, a_data_loader: DataLoader, a_writer: SummaryWriter, a_epoch: int) -> float:
         self.arch.train()
         epoch_loss: float = 0.0
-        for i, (inputs, targets) in enumerate(a_data_loader):
+        for i, (inputs, targets) in tqdm(enumerate(a_data_loader), desc=f"Epoch {a_epoch} - Mini-Batch Training "):
             inputs = [input_tensor.to(self.device, dtype=torch.long) for input_tensor in inputs]
             targets = targets.to(self.device, dtype=torch.float)
             outputs = self.arch(*inputs)
@@ -112,11 +112,11 @@ class Net:
         epoch_loss /= len(a_data_loader)
         return epoch_loss
 
-    def validate(self, a_data_loader: DataLoader, a_writer: SummaryWriter) -> float:
+    def validate(self, a_data_loader: DataLoader, a_writer: SummaryWriter, a_epoch: int) -> float:
         self.arch.eval()
         epoch_loss: float = 0.0
         with torch.no_grad():
-            for i, (inputs, targets) in enumerate(a_data_loader):
+            for i, (inputs, targets) in tqdm(enumerate(a_data_loader), desc=f"Epoch {a_epoch} - Mini-Batch Validation "):
                 inputs = [input_tensor.to(self.device, dtype=torch.long) for input_tensor in inputs]
                 targets = targets.to(self.device, dtype=torch.float)
                 outputs = self.arch(*inputs)
