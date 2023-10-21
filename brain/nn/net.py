@@ -94,7 +94,7 @@ class Net:
 
         self.loss = loss(**self.loss_param.kwargs)
 
-    def train(self, a_data_loader: DataLoader, a_writer: SummaryWriter, a_epoch: int) -> float:
+    def train(self, a_data_loader: DataLoader, a_epoch: int, a_writer: SummaryWriter = None) -> float:
         self.arch.train()
         epoch_loss: float = 0.0
         for i, (inputs, targets) in tqdm(enumerate(a_data_loader), desc=f"Epoch {a_epoch} - Mini-Batch Training "):
@@ -108,11 +108,12 @@ class Net:
             epoch_loss += loss.item() * targets.size(0)
             loss.backward()
             self.optim.step()
-            a_writer.add_scalar('data/train_batch_loss', loss, i)
+            if a_writer:
+                a_writer.add_scalar('data/train_batch_loss', loss, i)
         epoch_loss /= len(a_data_loader)
         return epoch_loss
 
-    def validate(self, a_data_loader: DataLoader, a_writer: SummaryWriter, a_epoch: int) -> float:
+    def validate(self, a_data_loader: DataLoader, a_epoch: int, a_writer: SummaryWriter = None) -> float:
         self.arch.eval()
         epoch_loss: float = 0.0
         with torch.no_grad():
@@ -123,7 +124,8 @@ class Net:
                 loss = self.loss(outputs, targets)
                 self.logger.info(f"Batch {i}'s Validation Loss is {loss.item()}.")
                 epoch_loss += loss.item() * targets.size(0)
-                a_writer.add_scalar('data/val_batch_loss', loss, i)
+                if a_writer:
+                    a_writer.add_scalar('data/val_batch_loss', loss, i)
             epoch_loss /= len(a_data_loader)
         self.lrs.step(epoch_loss)
         return epoch_loss
