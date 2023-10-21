@@ -52,6 +52,9 @@ class TrainDataset(Dataset):
         attention_mask = torch.from_numpy(attention_mask)
         token_ids = torch.from_numpy(token_ids)
         reactivities = torch.from_numpy(reactivities)
+
+        nan_ids = torch.where(torch.isnan(reactivities))
+        reactivities[nan_ids] = 0
         return input_ids, attention_mask, token_ids, reactivities
 
     def __get_sample(self, a_index: int) -> Tuple[str, List[float]]:
