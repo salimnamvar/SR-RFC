@@ -1,7 +1,6 @@
-""" SRRFC Dataset Handler
+""" SRRFC Parquet-based Dataset Handler
 
 """
-
 
 # region Imported Dependencies
 from typing import List, Tuple
@@ -11,10 +10,7 @@ from torch import Tensor
 from torch.utils.data import Dataset
 import pyarrow.parquet as pq
 from transformers import BertTokenizer
-
-from brain.util.data.scheme import DatasetScheme, SampleIndex, SampleIndices
-
-
+from brain.util.data.scheme import DatasetScheme
 # endregion Imported Dependencies
 
 
@@ -23,9 +19,8 @@ class TrainDataset(Dataset):
 
     """
 
-    def __init__(self, a_file: str, a_chunk_size: int, a_max_length: int = 457, a_inc_exp_type: bool = False):
+    def __init__(self, a_file: str, a_max_length: int = 457, a_inc_exp_type: bool = False):
         self.file: str = a_file
-        self.chunk_size: int = a_chunk_size
         self.max_length: int = a_max_length
         self.inc_exp_type: bool = a_inc_exp_type
         self.table = pq.read_table(self.file)
@@ -33,14 +28,6 @@ class TrainDataset(Dataset):
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
         self.exp_map: dict = {'DMS_MaP': '0',
                               '2A3_MaP': '1'}
-
-    def __init_samples(self):
-        sample_counter = 0
-        for chunk_id, chunk in enumerate(self.chunks):
-            for in_chunk_id in range(len(chunk)):
-                id = sample_counter + in_chunk_id
-                self.sample_indices.append(SampleIndex(idx=id, chunk_idx=chunk_id, in_chunk_idx=in_chunk_id))
-            sample_counter += len(chunk)
 
     def __len__(self):
         return self.table.num_rows
