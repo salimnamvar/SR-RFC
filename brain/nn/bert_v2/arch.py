@@ -15,7 +15,7 @@ class Arch(nn.Module):
         This class is used to define the network topology that uses a BERTv0 module as a block.
     """
 
-    def __init__(self, a_in_size: Tuple[int, int] = (457, 4), a_out_size: int = 457) -> None:
+    def __init__(self, a_max_length: int = 457, a_out_size: int = 457) -> None:
         """ Constructor
 
         :param a_in_size: A tuple that specifies the input shape of the network as (S, F).
@@ -24,11 +24,11 @@ class Arch(nn.Module):
         :param a_out_size: An integer that specifies the number of output features.
         """
         super(Arch, self).__init__()
-        self.seq_len = a_in_size[0]
-        self.n_input_feat = a_in_size[1]
-        self.hidden_size = 4
-        self.n_layers = 1
-        self.n_attn_heads = 4
+        self.seq_len = a_max_length
+        self.n_input_feat = 5
+        self.hidden_size = 768
+        self.n_layers = 12
+        self.n_attn_heads = 12
         self.n_output = a_out_size
         self.bert = BERT(self.n_input_feat, self.seq_len, a_hidden=self.hidden_size, a_n_layers=self.n_layers,
                          a_attn_heads=self.n_attn_heads)
