@@ -22,7 +22,7 @@ class BrainConfig:
         if BrainConfig.__instance is not None:
             raise Exception('The `Config` class is allowed to have one instance.')
         else:
-            self.__cfg_path: str = a_cfg
+            self.cfg_path: str = a_cfg
 
             # Parse Configuration file
             self.__parse_file()
@@ -31,7 +31,7 @@ class BrainConfig:
             BrainConfig.__instance = self
 
     def __parse_file(self):
-        with open(self.__cfg_path, 'r') as file:
+        with open(self.cfg_path, 'r') as file:
             for line in file:
                 line = line.strip()
                 if not line or line.startswith("#"):

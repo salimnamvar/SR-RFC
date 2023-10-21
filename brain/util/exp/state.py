@@ -5,6 +5,7 @@
 # region Imported Dependencies
 import os
 import datetime
+import shutil
 from dataclasses import dataclass
 from typing import List
 
@@ -45,8 +46,9 @@ class Epochs:
 
 
 class Experiment:
-    def __init__(self, a_root_path: str, a_cfg_name: str, a_run: int, a_model_name: str):
+    def __init__(self, a_root_path: str, a_cfg_name: str, a_cfg_path: str, a_run: int, a_model_name: str):
         self.cfg_name: str = a_cfg_name
+        self.cfg_path: str = a_cfg_path
         self.run: int = a_run
         self.epochs: Epochs = Epochs()
         self.root_path: str = a_root_path
@@ -61,6 +63,9 @@ class Experiment:
         os.makedirs(self.path, exist_ok=True)
         SetupLogger(a_filename=os.path.join(self.path, 'exp.log'))
 
+        # Save CFG
+        shutil.copy(self.cfg_path, self.path)
+
     def save_epoch(self, a_loss: float, a_epoch: int, a_state: dict):
         if a_loss >= self.epochs.min:
             checkpoint_name = "E-%03d_Loss-%0.5f.pth.tar" % (a_epoch, a_loss)
@@ -72,9 +77,9 @@ class Experiments:
         self.root_path: str = a_root_path
         self._items: List[Experiment] = []
 
-    def append(self, a_cfg_name: str, a_run: int, a_model_name: str) -> None:
+    def append(self, a_cfg_name: str, a_run: int, a_model_name: str, a_cfg_path: str) -> None:
         self._items.append(Experiment(a_cfg_name=a_cfg_name, a_run=a_run, a_root_path=self.root_path,
-                                      a_model_name=a_model_name))
+                                      a_model_name=a_model_name, a_cfg_path=a_cfg_path))
 
     @property
     def items(self) -> List[Experiment]:
