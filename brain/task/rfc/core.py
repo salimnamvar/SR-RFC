@@ -46,7 +46,8 @@ class Task(BaseTask):
     def __init_train_loader(self):
         # Dataset
         dataset = TrainDataset(a_file=self.cfg.data.train,
-                               a_max_length=self.cfg.data.max_length, a_inc_exp_type=self.cfg.data.inc_exp_type)
+                               a_max_length=self.cfg.data.max_length, a_inc_exp_type=self.cfg.data.inc_exp_type,
+                               a_one_hot=self.cfg.data.one_hot)
 
         if self.cfg.data.inc_exp_type:
             # Data Loader
@@ -93,11 +94,11 @@ class Task(BaseTask):
                 self.logger.info(f'Experiment Run {run} is started.')
                 self.exps.append(a_cfg_name=self.cfg.cfg.name, a_run=run, a_model_name=self.model.name,
                                  a_cfg_path=self.cfg.cfg_path)
-                # writer = SummaryWriter(self.exps[-1].path)
+                writer = SummaryWriter(self.exps[-1].path)
                 for ep in range(0, self.cfg.train.epoch):
                     self.logger.info(f"Run {run}'s Epoch {ep} is started.")
-                    train_loss = self.model.train(a_data_loader=loader.train, a_writer=None, a_epoch=ep)
-                    val_loss = self.model.validate(a_data_loader=loader.val, a_writer=None, a_epoch=ep)
+                    train_loss = self.model.train(a_data_loader=loader.train, a_writer=writer, a_epoch=ep)
+                    val_loss = self.model.validate(a_data_loader=loader.val, a_writer=writer, a_epoch=ep)
                     self.logger.info(
                         f"Run {run}'s Epoch {ep}'s Training Loss is {train_loss} and Validation Loss is {val_loss}.")
                     self.exps.experiment.save_epoch(a_loss=val_loss, a_epoch=ep,
@@ -107,9 +108,9 @@ class Task(BaseTask):
                                                              'val_loss': val_loss,
                                                              'train_loss': train_loss,
                                                              'optimizer': self.model.optim.state_dict()})
-                    #writer.add_scalar('data/train_epoch_loss', train_loss, ep)
-                    #writer.add_scalar('data/val_epoch_loss', val_loss, ep)
-                #writer.close()
+                    writer.add_scalar('data/train_epoch_loss', train_loss, ep)
+                    writer.add_scalar('data/val_epoch_loss', val_loss, ep)
+                writer.close()
 
     def __init_test_loader(self):
         # DMS Dataset
