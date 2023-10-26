@@ -22,8 +22,9 @@ class TrainDataset(Dataset):
 
     """
 
-    def __init__(self, a_file: str, a_max_length: int = 457, a_inc_exp_type: bool = False):
+    def __init__(self, a_file: str, a_max_length: int = 457, a_inc_exp_type: bool = False, a_one_hot: bool = False):
         self.file: str = a_file
+        self.one_hot: bool = a_one_hot
         self.max_length: int = a_max_length
         self.inc_exp_type: bool = a_inc_exp_type
         self.table = pq.read_table(self.file)
@@ -57,10 +58,15 @@ class TrainDataset(Dataset):
         reactivities[nan_ids] = 0
         return input_ids, attention_mask, token_ids, reactivities
 
+    def __postprocess(self, a_input_ids) -> Tensor:
+        if self.one_hot:
+            a_input_ids = torch.eye(len(self.sequence_mapper) + 1)[a_input_ids]
+        return a_input_ids
+
     def __get_sample(self, a_index: int) -> Tuple[str, List[float]]:
         row = self.table.slice(a_index, 1).to_pylist()[0]
-        sequence = row[self.dataset_scheme.input.name]
-        reactivity = [row[label.name] for label in self.dataset_scheme.label]
+        sequence = row[self.dataset_scheme.sequence.name]
+        reactivity = [row[label.name] for label in self.dataset_scheme.reactivity]
         return sequence, reactivity
 
     def __getitem__(self, a_index) -> Tuple[Tuple[Tensor, Tensor, Tensor], Tensor]:
@@ -70,6 +76,9 @@ class TrainDataset(Dataset):
 
             # Preprocess sample
             input_ids, attention_mask, token_type_ids, reactivity = self.__preprocess(sequence, reactivity)
+
+            # Postprocess sample
+            input_ids = self.__postprocess(input_ids)
         except Exception as e:
             raise e
         return (input_ids, attention_mask, token_type_ids), reactivity
