@@ -61,9 +61,9 @@ class TrainDataset(Dataset):
     def __get_sample(self, a_index: int) -> Tuple[str, List[float], str]:
         t_row = self.table.slice(a_index, 1)
         row = t_row.to_pylist()[0]
-        sequence = row[self.dataset_scheme.input.name]
+        sequence = row[self.dataset_scheme.sequence.name]
         experiment = row[self.dataset_scheme.experiment.name]
-        reactivity = [row[label.name] for label in self.dataset_scheme.label]
+        reactivity = [row[label.name] for label in self.dataset_scheme.reactivity]
         return sequence, reactivity, experiment
 
     def __getitem__(self, a_index) -> Tuple[Tuple[Tensor, Tensor, Tensor], Tensor]:
