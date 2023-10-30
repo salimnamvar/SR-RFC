@@ -1,0 +1,1 @@
+COPY test FROM 'G:/Challenges/RNA/data/test_sequences.csv' DELIMITER ',' CSV HEADER;
