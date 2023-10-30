@@ -1,6 +1,6 @@
 CREATE TABLE test (
-  id_min TEXT,
-  id_max TEXT,
+  id_min INT,
+  id_max INT,
   sequence_id TEXT,
   sequence TEXT,
   future INT
