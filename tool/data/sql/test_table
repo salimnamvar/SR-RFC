@@ -1,0 +1,7 @@
+CREATE TABLE test (
+  id_min TEXT,
+  id_max TEXT,
+  sequence_id TEXT,
+  sequence TEXT,
+  future INT
+)
