@@ -108,8 +108,8 @@ class Task(BaseTask):
                                                              'val_loss': val_loss,
                                                              'train_loss': train_loss,
                                                              'optimizer': self.model.optim.state_dict()})
-                    writer.add_scalar('data/train_epoch_loss', train_loss, ep)
-                    writer.add_scalar('data/val_epoch_loss', val_loss, ep)
+                    writer.add_scalar(f'Epoch-{ep}/train_epoch_loss', train_loss, ep)
+                    writer.add_scalar(f'Epoch-{ep}/val_epoch_loss', val_loss, ep)
                 writer.close()
 
     def __init_test_loader(self):
