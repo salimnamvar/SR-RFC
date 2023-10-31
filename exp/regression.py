@@ -5,6 +5,7 @@ from scipy.stats import pearsonr
 
 from brain.util.data.base_dataset import TrainDataset
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
 
 ds = TrainDataset(a_file='G:/Challenges/RNA/data/train_data.parquet')
 x = ds.table.slice(0, 1)
@@ -25,12 +26,15 @@ reactivity[np.where(reactivity == None)] = 0
 pad_seq = np.zeros_like(reactivity)
 pad_seq[:len(sequence)] = sequence
 
-correlation, _ = pearsonr(pad_seq, reactivity)
-print("Pearson Correlation:", correlation)
+X = pad_seq.reshape(-1, 1)  # Reshape for single feature
+y = reactivity
 
-plt.plot(pad_seq, reactivity, label='Sequence', marker='o')
-#plt.scatter(pad_seq, reactivity, label='Data Points')
-plt.xlabel('Index')
-plt.ylabel('Values')
+model = LinearRegression()
+model.fit(X, y)
+
+plt.scatter(pad_seq, reactivity, label='Data Points')
+plt.plot(pad_seq, model.predict(X), color='red', label='Regression Line')
+plt.xlabel('RNA Sequence Levels')
+plt.ylabel('Reactivity Values')
 plt.legend()
 plt.show()
