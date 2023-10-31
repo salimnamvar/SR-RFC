@@ -55,9 +55,9 @@ Regressor of two values:
 
 # Test Data Statistics #
 
-| Sequence Length | Occurrences |                                                  Code                                                  |
-|:---------------:|:-----------:|:------------------------------------------------------------------------------------------------------:|
-|       176       |   335823    | `Select (id_max - id_min) AS length, COUNT(*) AS occurances FROM test GROUP BY length ORDER BY length` |
-|       206       |   1000000   |                                                                                                        |
-|       306       |    2000     |                                                                                                        |
-|       456       |    6000     |                                                                                                        |
+| Sequence Length | Occurrences |                                                    Code                                                    |
+|:---------------:|:-----------:|:----------------------------------------------------------------------------------------------------------:|
+|       177       |   335823    | `Select (id_max - id_min + 1) AS length, COUNT(*) AS occurances FROM test GROUP BY length ORDER BY length` |
+|       207       |   1000000   |                                                                                                            |
+|       307       |    2000     |                                                                                                            |
+|       457       |    6000     |                                                                                                            |
