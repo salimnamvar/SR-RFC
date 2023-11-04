@@ -19,14 +19,16 @@ class Column:
 @dataclass
 class DatasetScheme:
     features: List[str]
-    label: List[Column]
-    input: Column
+    reactivity: List[Column]
+    reactivity_error: List[Column]
+    sequence: Column
 
     def __init__(self, a_feat: List[str]) -> None:
         self.features = a_feat
-        self.label = [Column(name=col, index=i) for i, col in enumerate(self.features) if
-                      'reactivity' in col and 'error' not in col]
-        self.input = Column(name='sequence', index=self.features.index('sequence'))
+        self.reactivity = [Column(name=col, index=i) for i, col in enumerate(self.features) if
+                           'reactivity' in col and 'error' not in col]
+        self.reactivity_error = [Column(name=col, index=i) for i, col in enumerate(self.features) if 'error' in col]
+        self.sequence = Column(name='sequence', index=self.features.index('sequence'))
         self.experiment = Column(name='experiment_type', index=self.features.index('experiment_type'))
 
 

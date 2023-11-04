@@ -3,7 +3,7 @@
 """
 
 # region Imported Dependencies
-from typing import Tuple
+import torch
 from torch import nn, Tensor
 from brain.nn.bert.BB import BERT
 # endregion Imported Dependencies
@@ -26,15 +26,16 @@ class Arch(nn.Module):
         super(Arch, self).__init__()
         self.seq_len = a_max_length
         self.n_input_feat = 5
-        self.hidden_size = 768
-        self.n_layers = 12
-        self.n_attn_heads = 12
+        self.hidden_size = 5
+        self.n_layers = 5
+        self.n_attn_heads = 5
         self.n_output = a_out_size
         self.bert = BERT(self.n_input_feat, self.seq_len, a_hidden=self.hidden_size, a_n_layers=self.n_layers,
                          a_attn_heads=self.n_attn_heads)
         self.fc_action = nn.Linear(self.hidden_size, a_out_size)
 
-    def forward(self, a_net_input: Tensor) -> Tensor:
+    def forward(self, a_input_ids: torch.Tensor, a_attention_mask: torch.Tensor,
+                a_token_type_ids: torch.Tensor) -> Tensor:
         """ Feedforward
 
         :param a_net_input: A pytorch tensor that specifies the input of the network in shape of [B, S, F].
@@ -46,7 +47,7 @@ class Arch(nn.Module):
             - C is an integer number that indicates the number of output features.
         """
 
-        bert_output, _ = self.bert(a_net_input)
+        bert_output, _ = self.bert(a_input_ids)
         classification_out = bert_output[:, 0, :]
         output = self.fc_action(classification_out)
         return output

@@ -95,10 +95,11 @@ class Attention(nn.Module):
         :return: The layer's output.
         """
         scores = torch.matmul(a_query, a_key.transpose(-2, -1)) / math.sqrt(a_query.size(-1))
+        scores = scores.to('cuda')
 
         if a_mask is not None:
-            _MASKING_VALUE = -1e9 if scores.dtype == torch.float32 else -1e4
-            scores = scores.masked_fill(a_mask == 0, _MASKING_VALUE)  # -1e9)
+            _MASKING_VALUE = torch.tensor(-1e9).to('cuda') if scores.dtype == torch.float32 else torch.tensor(-1e4).to('cuda')
+            scores = scores.masked_fill(a_mask.to('cuda') == torch.tensor(0), _MASKING_VALUE)
 
         p_attn = F.softmax(scores, dim=-1)
 

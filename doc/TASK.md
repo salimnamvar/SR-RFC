@@ -45,7 +45,6 @@ Regressor of two values:
 | Samples With More Than Twice Occurrences |                   40,348                    |   `SELECT SUM(occurance_count) AS total_occurances FROM (SELECT sequence_id, COUNT(sequence_id) AS occurance_count FROM train GROUP BY sequence_id HAVING COUNT(sequence_id) > 2) AS subquery;`   |
 |   Samples With Additional Occurrences    |                   30,534                    | `SELECT SUM(occurance_count - 2) AS total_occurances FROM (SELECT sequence_id, COUNT(sequence_id) AS occurance_count FROM train GROUP BY sequence_id HAVING COUNT(sequence_id) > 2) AS subquery;` |
 
-
 | Sequence Length | Occurrences |                                                 Code                                                  |
 |:---------------:|:-----------:|:-----------------------------------------------------------------------------------------------------:|
 |       115       |    27290    | `SELECT LENGTH(train.sequence) AS seq_length, COUNT(*) as occurances FROM train GROUP BY seq_length;` |
@@ -53,3 +52,12 @@ Regressor of two values:
 |       155       |    13038    |                                                                                                       |
 |       206       |    4998     |                                                                                                       |
 |       170       |    30000    |                                                                                                       |
+
+# Test Data Statistics #
+
+| Sequence Length | Occurrences |                                                    Code                                                    |
+|:---------------:|:-----------:|:----------------------------------------------------------------------------------------------------------:|
+|       177       |   335823    | `Select (id_max - id_min + 1) AS length, COUNT(*) AS occurances FROM test GROUP BY length ORDER BY length` |
+|       207       |   1000000   |                                                                                                            |
+|       307       |    2000     |                                                                                                            |
+|       457       |    6000     |                                                                                                            |
