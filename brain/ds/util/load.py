@@ -5,8 +5,12 @@
 
 # region Imported Dependencies
 from dataclasses import dataclass
-from typing import List, Tuple, Union, Dict
+from typing import List, Tuple, Union
 from torch.utils.data import DataLoader
+
+from brain.util.base.obj import BaseObjectList
+
+
 # endregion Imported Dependencies
 
 
@@ -43,34 +47,6 @@ class Loader:
     test: DataLoader = None
 
 
-class Loaders:
-    def __init__(self) -> None:
-        self._items: Dict[str] = {}
-
-    def append(self, a_loader: Loader) -> None:
-        self._items[a_loader.name] = a_loader
-
-    def pop(self, a_key: str) -> None:
-        self._items.pop(a_key)
-
-    @property
-    def items(self):
-        return self._items.items()
-
-    def __getitem__(self, a_key: str) -> Loader:
-        return self._items[a_key]
-
-    def __len__(self) -> int:
-        return len(self._items)
-
-    @property
-    def train(self) -> List[DataLoader]:
-        return [loader.train for name, loader in self._items.items()]
-
-    @property
-    def val(self) -> List[DataLoader]:
-        return [loader.val for name, loader in self._items.items()]
-
-    @property
-    def test(self) -> List[DataLoader]:
-        return [loader.test for name, loader in self._items.items()]
+class Loaders(BaseObjectList[Loader]):
+    def __init__(self, a_name: str = 'DataLoaders', a_max_size: int = -1, a_items: List[Loader] = None):
+        super().__init__(a_name=a_name, a_max_size=a_max_size, a_items=a_items)
