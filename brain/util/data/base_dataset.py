@@ -25,7 +25,7 @@ class TrainDataset(Dataset):
         self.inc_exp_type: bool = a_inc_exp_type
         self.table = pq.read_table(self.file)
         self.dataset_scheme: DatasetScheme = DatasetScheme(a_feat=self.table.column_names)
-        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
+        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True,)
         self.exp_map: dict = {'DMS_MaP': '0',
                               '2A3_MaP': '1'}
 
@@ -34,8 +34,6 @@ class TrainDataset(Dataset):
 
     def __preprocess(self, a_sequence: str, a_reactivity: List[float],
                      a_experiment: str) -> Tuple[Tensor, Tensor, Tensor, Tensor]:
-        reactivity = torch.tensor(np.array(a_reactivity[:len(a_sequence)], dtype=float))
-
         # Sequence Tokenization
         sequence_1 = ' '.join(a_sequence)
         sequence_2 = self.exp_map[a_experiment] if self.inc_exp_type else None
@@ -46,15 +44,29 @@ class TrainDataset(Dataset):
         attention_mask = torch.tensor(inputs['attention_mask'], dtype=torch.int)
         token_type_ids = torch.tensor(inputs['token_type_ids'], dtype=torch.int)
 
-        # Reactivity Nan values
-        nan_ids = torch.where(torch.isnan(reactivity))
-        # Plus one index more for passing the classification token which is in the index 0
-        attention_mask[nan_ids[0] + 1] = 0
-        reactivity[nan_ids] = 0
+        # Convert the reactivity into tensor
+        reactivity = torch.tensor(np.array(a_reactivity[:len(a_sequence)], dtype=np.float32))
+
+        # Check for NaN values and create a mask to identify them
+        nan_mask = torch.isnan(reactivity)
+
+        # Calculate the minimum and maximum values for non-NaN elements
+        non_nan_values = reactivity[~nan_mask]
+
+        # Normalize the non-NaN values between 0 and 1
+        # min_value = non_nan_values.min()
+        # max_value = non_nan_values.max()
+        # (non_nan_values - min_value) / (max_value - min_value)
+        normalized = torch.zeros(reactivity.size(), dtype=torch.float)
+        normalized[~nan_mask] = torch.clamp(non_nan_values, min=0, max=1)
+
+        # NaN Values
+        normalized[nan_mask] = 0
 
         # Reactivity Padding
-        padded_reactivity = torch.zeros(self.max_length, dtype=torch.float32)
-        padded_reactivity[:len(reactivity)] = reactivity
+        # torch.full((self.max_length,), -2, dtype=torch.float32)
+        padded_reactivity = torch.zeros(self.max_length, dtype=torch.float)
+        padded_reactivity[:len(normalized)] = normalized
 
         return input_ids, attention_mask, token_type_ids, padded_reactivity
 

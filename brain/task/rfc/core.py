@@ -12,7 +12,7 @@ from brain.nn.net import Net
 from brain.nn.util.param import Param
 from brain.task.base import BaseTask
 from brain.util.cfg.config import BrainConfig
-from brain.util.data.bert_dataset import TrainDataset
+from brain.util.data.base_dataset import TrainDataset
 from brain.util.data.base_dataset import TestDataset
 from brain.util.data.load import load_indices, Loaders, Loader
 from brain.util.exp.state import Experiments
@@ -46,8 +46,7 @@ class Task(BaseTask):
     def __init_train_loader(self):
         # Dataset
         dataset = TrainDataset(a_file=self.cfg.data.train,
-                               a_max_length=self.cfg.data.max_length, a_inc_exp_type=self.cfg.data.inc_exp_type,
-                               a_one_hot=self.cfg.data.one_hot)
+                               a_max_length=self.cfg.data.max_length, a_inc_exp_type=self.cfg.data.inc_exp_type)
 
         if self.cfg.data.inc_exp_type:
             # Data Loader
