@@ -13,7 +13,7 @@ from torch import Tensor
 from torch.utils.data import Dataset
 import pyarrow.parquet as pq
 from transformers import BertTokenizer
-from brain.util.data.scheme import DatasetScheme
+from brain.ds.util.scheme import DatasetScheme
 # endregion Imported Dependencies
 
 

@@ -8,13 +8,13 @@ import logging
 import torch
 from torch.utils.data import DataLoader, SubsetRandomSampler
 from torch.utils.tensorboard import SummaryWriter
-from brain.nn.net import Net
-from brain.nn.util.param import Param
+from brain.nn.core import Net
+from brain.util.base.arg import Param
 from brain.task.base import BaseTask
 from brain.util.cfg.config import BrainConfig
 from brain.util.data.base_dataset import TrainDataset
 from brain.util.data.base_dataset import TestDataset
-from brain.util.data.load import load_indices, Loaders, Loader
+from brain.ds.util.load import load_indices, Loaders, Loader
 from brain.util.exp.state import Experiments
 
 

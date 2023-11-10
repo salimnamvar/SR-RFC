@@ -2,18 +2,20 @@
 
 """
 
-
 # region Imported Dependencies
 import importlib
 from typing import Iterable
 import torch
+from torch.utils.data import Dataset
+
 from brain.ds.hdl.base import BaseDataset
 from brain.util.base.arg import Param
+
+
 # endregion Imported Dependencies
 
-
-class CoreDataset(BaseDataset):
-    def __init__(self, a_name: str, a_ds: Param) -> None:
+class CoreDataset(Dataset):
+    def __init__(self, a_name: str, a_ds: Param, a_file: str) -> None:
         self.name: str = a_name
         self.ds_param: Param = a_ds
         self.ds: BaseDataset = None

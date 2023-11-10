@@ -15,10 +15,10 @@ class BaseTask(ABC):
         self.cfg: BrainConfig = BrainConfig.get_instance()
 
     def inference(self, *args, **kwargs):
-        NotImplemented
+        NotImplementedError('Subclasses should implement this method.')
 
     def train(self, *args, **kwargs):
-        NotImplemented
+        NotImplementedError('Subclasses should implement this method.')
 
     def test(self, *args, **kwargs):
-        NotImplemented
+        NotImplementedError('Subclasses should implement this method.')
