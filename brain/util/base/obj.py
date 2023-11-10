@@ -13,7 +13,7 @@ from typing import List, Generic, TypeVar, Union
 # endregion Imported Dependencies
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 """
 A type variable used in generic classes.
 
@@ -23,71 +23,96 @@ A type variable used in generic classes.
 
 
 class BaseObject(ABC):
-    """ Base Object
+    """Base Object
 
-        The Base Object is a principle basic object class that has the common features and functionalities in handling
-        an object.
+    The Base Object is a principle basic object class that has the common features and functionalities in handling
+    an object.
 
-        Attributes
-            name:
-                A :type:`string` that specifies the class object name.
+    Attributes
+        name:
+            A :type:`string` that specifies the class object name.
     """
 
-    def __init__(self, a_name: str = 'Object') -> None:
-        """ Base Object
+    def __init__(self, a_name: str = "Object") -> None:
+        """Base Object
 
-            This is a constructor that create an instance of the BaseObject object.
+        This is a constructor that create an instance of the BaseObject object.
 
-            Args
-                a_name:
-                    A :type:`string` that specifies the name of the object.
+        Args
+            a_name:
+                A :type:`string` that specifies the name of the object.
 
-            Returns
-                    The constructor does not return any values.
+        Returns
+                The constructor does not return any values.
         """
         self.name: str = a_name
 
-    @abstractmethod
+    @property
+    def name(self) -> str:
+        """Instance Name Getter
+
+        This property specifies the name of the class object.
+
+        Returns
+            str: This property returns a :type:`string` as the name of the class object.
+        """
+        return self._name
+
+    @name.setter
+    def name(self, a_name: str = "BASE_OBJECT") -> None:
+        """Instance Name Setter
+
+        This setter is used to set the name of the class object.
+
+        Args:
+            a_name (str): A :type:`string` that specifies the class object's name.
+
+        Returns:
+            None
+        """
+        self._name = a_name.upper().replace(" ", "_")
+
+    # @abstractmethod
     def to_dict(self) -> dict:
-        """ To Dictionary
+        """To Dictionary
 
-            This method represent the object as a dictionary. The method should be overridden.
+        This method represent the object as a dictionary. The method should be overridden.
 
-            Returns
-                dic:
-                    A dictionary that contains the object elements.
+        Returns
+            dic:
+                A dictionary that contains the object elements.
         """
         NotImplementedError("Subclasses must implement `to_dict`")
 
     def to_str(self) -> str:
-        """ To String
+        """To String
 
-            This method represent the object as a string.
+        This method represent the object as a string.
 
-            Returns
-                message:
-                    A :type:`string` as the object representative.
+        Returns
+            message:
+                A :type:`string` as the object representative.
         """
         return pprint.pformat(self.to_dict())
 
     def __repr__(self) -> str:
-        """ Represent Instance
+        """Represent Instance
 
-            This method represents the object of the class as a string.
+        This method represents the object of the class as a string.
 
-            Returns
-                message:
-                    This method returns a :type:`string` as the representation of the class object.
+        Returns
+            message:
+                This method returns a :type:`string` as the representation of the class object.
         """
         return self.to_str()
 
-    def copy(self) -> 'BaseObject':
-        """ Copy Instance
+    def copy(self) -> "BaseObject":
+        """Copy Instance
 
-            This method copies the object deeply.
+        This method copies the object deeply.
 
-            Returns
-                The method returns the duplicated object of the class.
+        Returns
+            The method returns the duplicated object of the class.
         """
         return deepcopy(self)
 
@@ -106,7 +131,9 @@ class BaseObjectList(Generic[T], ABC):
             A list of objects of type `T` contained within the `BaseObjectList`.
     """
 
-    def __init__(self, a_name: str = 'Objects', a_max_size: int = -1, a_items: List[T] = None):
+    def __init__(
+        self, a_name: str = "Objects", a_max_size: int = -1, a_items: List[T] = None
+    ):
         """
         Constructor for the `BaseObjectList` class.
 
@@ -127,6 +154,31 @@ class BaseObjectList(Generic[T], ABC):
 
         if a_items is not None:
             self.append(a_item=a_items)
+
+    @property
+    def name(self) -> str:
+        """Instance Name Getter
+
+        This property specifies the name of the class object.
+
+        Returns
+            str: This property returns a :type:`string` as the name of the class object.
+        """
+        return self._name
+
+    @name.setter
+    def name(self, a_name: str = "BASE_OBJECT_LIST") -> None:
+        """Instance Name Setter
+
+        This setter is used to set the name of the class object.
+
+        Args:
+            a_name (str): A :type:`string` that specifies the class object's name.
+
+        Returns:
+            None
+        """
+        self._name = a_name.upper().replace(" ", "_")
 
     def to_dict(self) -> List[dict]:
         """
@@ -182,29 +234,29 @@ class BaseObjectList(Generic[T], ABC):
 
     def __setitem__(self, a_index: int, a_item: T):
         """
-           Get an item from the `BaseObjectList` by index.
+        Get an item from the `BaseObjectList` by index.
 
-           This method allows retrieving an item from the `BaseObjectList` by its index.
+        This method allows retrieving an item from the `BaseObjectList` by its index.
 
-           Args:
-               a_index (:type:int): The index of the item to retrieve.
+        Args:
+            a_index (:type:int): The index of the item to retrieve.
 
-           Returns:
-               T: The item at the specified index.
-           """
+        Returns:
+            T: The item at the specified index.
+        """
         self._items[a_index] = a_item
 
     def append(self, a_item: Union[T, List[T]]):
         """
-            Append an item or a list of items to the `BaseObjectList`.
+        Append an item or a list of items to the `BaseObjectList`.
 
-            This method appends an individual item or a list of items to the `BaseObjectList`.
+        This method appends an individual item or a list of items to the `BaseObjectList`.
 
-            Args:
-                a_item (Union[T, List[T]]): An item or a list of items to append.
+        Args:
+            a_item (Union[T, List[T]]): An item or a list of items to append.
 
-            Returns:
-                None
+        Returns:
+            None
         """
         if isinstance(a_item, list):
             for item in a_item:
@@ -214,15 +266,15 @@ class BaseObjectList(Generic[T], ABC):
 
     def _append_item(self, a_item: T) -> None:
         """
-            Append an item to the `BaseObjectList` (Internal).
+        Append an item to the `BaseObjectList` (Internal).
 
-            This internal method appends an item to the `BaseObjectList`, handling size constraints if `_max_size` is set.
+        This internal method appends an item to the `BaseObjectList`, handling size constraints if `_max_size` is set.
 
-            Args:
-                a_item (T): The item to append.
+        Args:
+            a_item (T): The item to append.
 
-            Returns:
-                None
+        Returns:
+            None
         """
         if self._max_size != -1:
             self._items.pop(0) if len(self) >= self._max_size else None
@@ -230,36 +282,36 @@ class BaseObjectList(Generic[T], ABC):
 
     def __delitem__(self, a_index: int):
         """
-            Delete an item from the `BaseObjectList` by index.
+        Delete an item from the `BaseObjectList` by index.
 
-            This method allows deleting an item from the `BaseObjectList` by its index.
+        This method allows deleting an item from the `BaseObjectList` by its index.
 
-            Args:
-                a_index (int): The index of the item to delete.
+        Args:
+            a_index (int): The index of the item to delete.
 
-            Returns:
-                None
+        Returns:
+            None
         """
         del self._items[a_index]
 
-    def copy(self) -> 'BaseObjectList[T]':
+    def copy(self) -> "BaseObjectList[T]":
         """
-            Create a deep copy of the `BaseObjectList`.
+        Create a deep copy of the `BaseObjectList`.
 
-            This method creates a deep copy of the `BaseObjectList`, including a copy of all contained items.
+        This method creates a deep copy of the `BaseObjectList`, including a copy of all contained items.
 
-            Returns:
-                BaseObjectList[T]: A duplicated instance of the class.
+        Returns:
+            BaseObjectList[T]: A duplicated instance of the class.
         """
         return deepcopy(self)
 
     def __len__(self) -> int:
         """
-            Get the number of items in the `BaseObjectList`.
+        Get the number of items in the `BaseObjectList`.
 
-            This method returns the number of items contained within the `BaseObjectList`.
+        This method returns the number of items contained within the `BaseObjectList`.
 
-            Returns:
-                int: The number of items.
+        Returns:
+            int: The number of items.
         """
         return len(self._items)
