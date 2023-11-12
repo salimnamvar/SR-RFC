@@ -3,7 +3,7 @@
 """
 
 # region Imported Dependencies
-from typing import List, Tuple, Iterable
+from typing import List, Union
 
 import torch
 
@@ -15,5 +15,5 @@ class Dataset(BaseDataset):
     def __init__(self, a_file: str, a_max_length: int = 457, a_name: str = 'Conv_Dataset'):
         super().__init__(a_file=a_file, a_max_length=a_max_length, a_name=a_name)
 
-    def __preprocess(self, a_sequence: str, a_reactivity: List[float], a_experiment: str) -> Iterable[torch.Tensor]:
+    def __preprocess(self, a_sequence: str, a_reactivity: List[float], a_experiment: str) -> Union[torch.Tensor]:
         NotImplementedError

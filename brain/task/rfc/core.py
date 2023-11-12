@@ -8,11 +8,12 @@ import logging
 import torch
 from torch.utils.data import DataLoader, SubsetRandomSampler
 from torch.utils.tensorboard import SummaryWriter
+
+from brain.ds.core import DatasetDispatcher
 from brain.nn.core import Net
 from brain.util.base.arg import Param
 from brain.task.base import BaseTask
 from brain.util.cfg.config import BrainConfig
-from brain.util.data.base_dataset import TrainDataset
 from brain.util.data.base_dataset import TestDataset
 from brain.ds.util.load import load_indices, Loaders, Loader
 from brain.util.exp.state import Experiments
@@ -45,8 +46,8 @@ class Task(BaseTask):
 
     def __init_train_loader(self):
         # Dataset
-        dataset = TrainDataset(a_file=self.cfg.data.train,
-                               a_max_length=self.cfg.data.max_length, a_inc_exp_type=self.cfg.data.inc_exp_type)
+        ds = Param(name=self.cfg.data.train_ds.name, kwargs=self.cfg.data.train_ds.kwargs)
+        dataset = DatasetDispatcher(a_name='Train_Dataset', a_ds=ds)
 
         if self.cfg.data.inc_exp_type:
             # Data Loader
