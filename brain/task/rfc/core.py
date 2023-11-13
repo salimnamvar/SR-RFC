@@ -88,8 +88,8 @@ class Task(BaseTask):
 
     def train(self):
         self.__init_train_loader()
-        for name, loader in self.loaders.items:
-            self.__init_model(a_name=name)
+        for loader in self.loaders.items:
+            self.__init_model(a_name=loader.name)
             for run in range(0, self.cfg.train.run):
                 self.logger.info(f'Experiment Run {run} is started.')
                 self.exps.append(a_cfg_name=self.cfg.cfg.name, a_run=run, a_model_name=self.model.name,
