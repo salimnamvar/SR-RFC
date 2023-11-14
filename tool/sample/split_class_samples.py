@@ -7,9 +7,12 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 # endregion Imported Dependencies
 
-# Load the CSV file containing IDs to exclude
-exclude_file = 'G:/Challenges/RNA/code/SR-RFC/data/nan_samples.csv'
-exclude_df = pd.read_csv(exclude_file, header=None, names=['sequence_id'])
+# Load the CSV files containing IDs to exclude
+nan_exclude_file = 'G:/Challenges/RNA/code/SR-RFC/data/nan_samples.csv'
+nan_exclude_df = pd.read_csv(nan_exclude_file, header=None, names=['sequence_id'])
+
+zero_exclude_file = 'G:/Challenges/RNA/code/SR-RFC/data/zero_samples.csv'
+zero_exclude_df = pd.read_csv(zero_exclude_file, header=None, names=['sequence_id'])
 
 # Load the original data from the Parquet file
 train_file = 'G:/Challenges/RNA/data/train_data.parquet'
@@ -19,8 +22,11 @@ df = pd.read_parquet(train_file)
 df.iloc[:, 0] = df.index
 selected_columns = df.iloc[:, [0, 2]]
 
-# Filter out samples marked for exclusion
-selected_columns = selected_columns[~selected_columns['sequence_id'].isin(exclude_df['sequence_id'])]
+# Filter out samples marked for exclusion of NaN reactivity vector samples
+selected_columns = selected_columns[~selected_columns['sequence_id'].isin(nan_exclude_df['sequence_id'])]
+
+# Filter out samples marked for exclusion of max-zero reactivity vector samples
+selected_columns = selected_columns[~selected_columns['sequence_id'].isin(zero_exclude_df['sequence_id'])]
 
 # Split the DataFrame into two separate DataFrames based on the 'experiment_type' column
 df_2A3_MaP = selected_columns[selected_columns['experiment_type'] == '2A3_MaP']
