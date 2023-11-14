@@ -29,14 +29,11 @@ class Dataset(BaseDataset):
 
     def _process_reactivity(self, a_reactivity: List[float]) -> torch.Tensor:
         # Handle None values by replacing them with zeros
-        processed_reactivity = [0.0 if value is None else value for value in a_reactivity]
-
-        # Normalize the list between 0 and 1
-        normalized_reactivity = torch.tensor(processed_reactivity, dtype=torch.float32) / torch.max(
-            torch.tensor(processed_reactivity, dtype=torch.float32))
+        processed_reactivity = torch.tensor([0.0 if value is None else value for value in a_reactivity],
+                                            dtype=torch.float32)
 
         # Pad the list to the target length
-        padded_reactivity = F.pad(normalized_reactivity, (0, self.max_length - len(normalized_reactivity)))
+        padded_reactivity = F.pad(processed_reactivity, (0, self.max_length - len(processed_reactivity)))
 
         # Reshape the padded reactivity into a 22x22 matrix
         reactivity = padded_reactivity.view(1, 22, 22)
