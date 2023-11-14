@@ -2,10 +2,12 @@
 
 """
 
+# region Imported Dependencies
 import csv
-
 from tqdm import tqdm
 from brain.util.data.base_dataset import TrainDataset
+# endregion Imported Dependencies
+
 
 ds = TrainDataset(a_file='G:/Challenges/RNA/data/train_data.parquet')
 csv_file_path = "G:/Challenges/RNA/code/SR-RFC/data/nan_samples.csv"
