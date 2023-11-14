@@ -4,13 +4,9 @@
 
 # region Imported Dependencies
 from typing import List, Tuple
-
 import torch
 import torch.nn.functional as F
-
 from brain.ds.hdl.base import BaseDataset
-
-
 # endregion Imported Dependencies
 
 
@@ -29,9 +25,6 @@ class Dataset(BaseDataset):
         # Reshape the padded sequence into a 22x22 matrix
         rna = padded_sequence.view(1, 22, 22)
 
-        if torch.isnan(rna).any():
-            print("Input data contains NaN values.")
-
         return rna
 
     def _process_reactivity(self, a_reactivity: List[float]) -> torch.Tensor:
@@ -41,9 +34,6 @@ class Dataset(BaseDataset):
         # Normalize the list between 0 and 1
         normalized_reactivity = torch.tensor(processed_reactivity, dtype=torch.float32) / torch.max(
             torch.tensor(processed_reactivity, dtype=torch.float32))
-
-        if torch.isnan(normalized_reactivity).any():
-            print("Input data contains NaN values.")
 
         # Pad the list to the target length
         padded_reactivity = F.pad(normalized_reactivity, (0, self.max_length - len(normalized_reactivity)))

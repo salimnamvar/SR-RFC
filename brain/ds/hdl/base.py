@@ -37,8 +37,6 @@ class BaseDataset(Dataset):
             sequence = row[self.dataset_scheme.sequence.name]
             experiment = row[self.dataset_scheme.experiment.name]
             reactivity = [row[label.name] for label in self.dataset_scheme.reactivity]
-            if all(re is None for re in reactivity):
-                print('N')
         except Exception as e:
             msg = f"{self.name}'s `__get_sample` method got an error: `{e}`"
             raise RuntimeError(msg)
