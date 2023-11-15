@@ -1,4 +1,4 @@
-""" Conv Dataset Handler
+""" LSTM Dataset Handler
 
 """
 
@@ -13,7 +13,7 @@ from brain.ds.hdl.base import BaseDataset
 
 
 class Dataset(BaseDataset):
-    def __init__(self, a_file: str, a_max_length: int = 484, a_name: str = 'Conv_Dataset'):
+    def __init__(self, a_file: str, a_max_length: int = 484, a_name: str = 'LSTM_Dataset'):
         super().__init__(a_file=a_file, a_max_length=a_max_length, a_name=a_name)
         self.char_map = {'A': 0.2, 'C': 0.4, 'G': 0.6, 'U': 0.8}
 
@@ -22,26 +22,16 @@ class Dataset(BaseDataset):
         numeric_sequence = torch.tensor([self.char_map[char] for char in a_sequence], dtype=torch.float32)
 
         # Pad the sequence to a length of 484
-        padded_sequence = F.pad(numeric_sequence, (0, self.max_length - len(numeric_sequence)))
-
-        # Reshape the padded sequence into a 22x22 matrix
-        rna = padded_sequence.view(1, 22, 22)
-
+        rna = F.pad(numeric_sequence, (0, self.max_length - len(numeric_sequence)))
         return rna
 
     def _process_reactivity(self, a_reactivity: List[float]) -> torch.Tensor:
         # Handle None values by replacing them with zeros
-        processed = torch.tensor([0.0 if value is None else value for value in a_reactivity],
+        processed = torch.tensor([0 if value is None else value for value in a_reactivity],
                                  dtype=torch.float32)
 
-        # Normalize the data between 0 and 1
-        #normalized = processed / torch.max(processed)
-
         # Pad the list to the target length
-        padded = F.pad(processed, (0, self.max_length - len(processed)))
-
-        # Reshape the padded reactivity into a 22x22 matrix
-        reactivity = padded.view(1, 22, 22)
+        reactivity = F.pad(processed, (0, self.max_length - len(processed)))
 
         return reactivity
 

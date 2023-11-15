@@ -98,9 +98,9 @@ class Net:
         self.arch.train()
         epoch_loss: float = 0.0
         for i, (inputs, targets) in tqdm(enumerate(a_data_loader), desc=f"Epoch {a_epoch} - Mini-Batch Training "):
-            inputs = [input_tensor.to(self.device, dtype=torch.long) for input_tensor in inputs]
+            inputs = inputs.to(self.device, dtype=torch.float)
             targets = targets.to(self.device, dtype=torch.float)
-            outputs = self.arch(*inputs)
+            outputs = self.arch(inputs)
             self.optim.zero_grad()
             loss = self.loss(outputs, targets)
             self.optim.zero_grad()
@@ -118,9 +118,9 @@ class Net:
         epoch_loss: float = 0.0
         with torch.no_grad():
             for i, (inputs, targets) in tqdm(enumerate(a_data_loader), desc=f"Epoch {a_epoch} - Mini-Batch Validation "):
-                inputs = [input_tensor.to(self.device, dtype=torch.long) for input_tensor in inputs]
+                inputs = inputs.to(self.device, dtype=torch.float)
                 targets = targets.to(self.device, dtype=torch.float)
-                outputs = self.arch(*inputs)
+                outputs = self.arch(inputs)
                 loss = self.loss(outputs, targets)
                 self.logger.info(f"Batch {i}'s Validation Loss is {loss.item()}.")
                 epoch_loss += loss.item() * targets.size(0)

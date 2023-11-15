@@ -1,4 +1,4 @@
-""" Core Dataset
+""" Dataset Dispatcher
 
 """
 
@@ -14,8 +14,8 @@ from brain.util.base.arg import Param
 
 # endregion Imported Dependencies
 
-class CoreDataset(Dataset):
-    def __init__(self, a_name: str, a_ds: Param, a_file: str) -> None:
+class DatasetDispatcher(Dataset):
+    def __init__(self, a_name: str, a_ds: Param) -> None:
         self.name: str = a_name
         self.ds_param: Param = a_ds
         self.ds: BaseDataset = None

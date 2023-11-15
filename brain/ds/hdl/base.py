@@ -4,8 +4,9 @@
 
 # region Imported Dependencies
 from abc import abstractmethod
-from typing import List, Tuple, Iterable
-from safetensors import torch
+from typing import List, Tuple, Union
+
+import torch
 from torch.utils.data import Dataset
 import pyarrow.parquet as pq
 from brain.ds.util.scheme import DatasetScheme
@@ -26,10 +27,10 @@ class BaseDataset(Dataset):
         return self.table.num_rows
 
     @abstractmethod
-    def __preprocess(self, a_sequence: str, a_reactivity: List[float], a_experiment: str) -> Iterable[torch.Tensor]:
+    def _preprocess(self, a_sequence: str, a_reactivity: List[float], a_experiment: str) -> Tuple[torch.Tensor]:
         NotImplementedError("Subclasses should implement this method.")
 
-    def __get_sample(self, a_index: int) -> Tuple[str, List[float], str]:
+    def _get_sample(self, a_index: int) -> Tuple[str, List[float], str]:
         try:
             t_row = self.table.slice(a_index, 1)
             row = t_row.to_pylist()[0]
@@ -41,13 +42,13 @@ class BaseDataset(Dataset):
             raise RuntimeError(msg)
         return sequence, reactivity, experiment
 
-    def __getitem__(self, a_index: int) -> Iterable[torch.Tensor]:
+    def __getitem__(self, a_index: int) -> Tuple[torch.Tensor]:
         try:
             # Get sample
-            sequence, reactivity, experiment = self.__get_sample(a_index)
+            sequence, reactivity, experiment = self._get_sample(a_index)
 
             # Preprocess sample
-            data = self.__preprocess(sequence, reactivity, experiment)
+            data = self._preprocess(sequence, reactivity, experiment)
         except Exception as e:
             msg = f"{self.name}'s `__getitem__` method got an error: `{e}`"
             raise RuntimeError(msg)

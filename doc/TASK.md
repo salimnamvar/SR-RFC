@@ -44,6 +44,7 @@ Regressor of two values:
 |           Unique Sequence IDs            |                   806,573                   |                                                           `SELECT COUNT(*) FROM (SELECT sequence_id FROM train GROUP BY sequence_id);`                                                            |
 | Samples With More Than Twice Occurrences |                   40,348                    |   `SELECT SUM(occurance_count) AS total_occurances FROM (SELECT sequence_id, COUNT(sequence_id) AS occurance_count FROM train GROUP BY sequence_id HAVING COUNT(sequence_id) > 2) AS subquery;`   |
 |   Samples With Additional Occurrences    |                   30,534                    | `SELECT SUM(occurance_count - 2) AS total_occurances FROM (SELECT sequence_id, COUNT(sequence_id) AS occurance_count FROM train GROUP BY sequence_id HAVING COUNT(sequence_id) > 2) AS subquery;` |
+|    Samples with NaN reactivity vector    |                   81,480                    |                                                                               [NaN_Samples](../note/nan_samples.py)                                                                               |
 
 | Sequence Length | Occurrences |                                                 Code                                                  |
 |:---------------:|:-----------:|:-----------------------------------------------------------------------------------------------------:|

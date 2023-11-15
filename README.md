@@ -3,7 +3,7 @@
 ## Overview
 
 This repository contains my research for the Stanford Ribonanza RNA Folding. The goal of this competition is to predict
-the secondary structure of RNA molecules.
+the reactivity of RNA molecules.
 
 ## Competition Description
 
